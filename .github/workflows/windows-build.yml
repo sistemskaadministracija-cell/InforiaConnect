@@ -115,13 +115,17 @@ jobs:
       - name: Setup vcpkg with Github Actions binary cache
         uses: lukka/run-vcpkg@v11
         with:
-          vcpkgDirectory: ${{ github.workspace }}/vcpkg
+          vcpkgDirectory: C:/vcpkg
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
           doNotCache: false
+          doNotUpdateVcpkg: false
+        env:
+          VCPKG_ROOT: C:/vcpkg
 
       - name: Install vcpkg dependencies
         env:
           VCPKG_DEFAULT_HOST_TRIPLET: x64-windows-static
+          VCPKG_ROOT: C:/vcpkg
         shell: bash
         run: |
           if ! $VCPKG_ROOT/vcpkg \
