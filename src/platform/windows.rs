@@ -3036,11 +3036,11 @@ mod cert {
     use hbb_common::ResultType;
 
     extern "C" {
-        fn DeleteInforiaConnectTestCertsW();
+        fn DeleteRustDeskTestCertsW();
     }
     pub fn uninstall_cert() -> ResultType<()> {
         unsafe {
-            DeleteInforiaConnectTestCertsW();
+            DeleteRustDeskTestCertsW();
         }
         Ok(())
     }
