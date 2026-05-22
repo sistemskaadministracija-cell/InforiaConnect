@@ -135,9 +135,10 @@ jobs:
             || (find "C:/vcpkg/buildtrees/" -name "*.log" | while read -r f; do echo "$f:"; cat "$f"; done; exit 1)
 
       - name: Build InforiaConnect
+        shell: bash
         run: |
-          python3 .\build.py --portable --hwcodec --flutter --vram --skip-portable-pack
-          mv ./flutter/build/windows/x64/runner/Release ./InforiaConnect
+          python3 build.py --portable --hwcodec --flutter --vram --skip-portable-pack 2>&1
+          echo "Exit code: $?"
 
       - name: Build portable installer
         shell: bash
