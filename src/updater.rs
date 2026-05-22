@@ -137,13 +137,13 @@ fn check_update(manually: bool) -> ResultType<()> {
         #[cfg(target_os = "windows")]
         let download_url = if cfg!(feature = "flutter") {
             format!(
-                "{}/rustdesk-{}-x86_64.{}",
+                "{}/InforiaConnect-{}-x86_64.{}",
                 download_url,
                 version,
                 if update_msi { "msi" } else { "exe" }
             )
         } else {
-            format!("{}/rustdesk-{}-x86-sciter.exe", download_url, version)
+            format!("{}/InforiaConnect-{}-x86-sciter.exe", download_url, version)
         };
         log::debug!("New version available: {}", &version);
         let client = create_http_client_with_url(&download_url);
@@ -288,3 +288,4 @@ pub fn get_download_file_from_url(url: &str) -> Option<PathBuf> {
     let filename = url.split('/').last()?;
     Some(std::env::temp_dir().join(filename))
 }
+

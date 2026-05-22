@@ -104,3 +104,4 @@ impl<'a, T: blocking::BlockingSender, C: ::std::ops::Deref<Target = T>>
         )
     }
 }
+

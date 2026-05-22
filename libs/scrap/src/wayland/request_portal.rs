@@ -43,3 +43,4 @@ impl dbus::message::SignalArgs for OrgFreedesktopPortalRequestResponse {
   const NAME: &'static str = "Response";
   const INTERFACE: &'static str = "org.freedesktop.portal.Request";
 }
+

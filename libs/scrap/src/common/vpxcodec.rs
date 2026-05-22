@@ -595,3 +595,4 @@ impl Drop for Image {
 }
 
 unsafe impl Send for vpx_codec_ctx_t {}
+

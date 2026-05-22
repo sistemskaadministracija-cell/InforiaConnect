@@ -12,3 +12,4 @@ pub fn should_handle_msg(msg: &crate::ClipboardFile) -> bool {
             | crate::ClipboardFile::TryEmpty
     )
 }
+

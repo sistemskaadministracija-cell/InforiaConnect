@@ -579,3 +579,4 @@ impl Drop for Image {
 }
 
 unsafe impl Send for aom_codec_ctx_t {}
+

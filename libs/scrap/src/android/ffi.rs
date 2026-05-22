@@ -509,3 +509,4 @@ pub extern "system" fn Java_ffi_FFI_onAppStart(mut env: JNIEnv, _class: JClass, 
         }
     }
 }
+

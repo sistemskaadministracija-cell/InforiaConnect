@@ -281,3 +281,4 @@ pub struct xcb_get_geometry_reply_t {
     pub border_width: u16,
     pub pad0: [u8; 2],
 }
+

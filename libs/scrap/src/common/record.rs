@@ -421,3 +421,4 @@ impl Drop for HwRecorder {
         self.ctx.tx.as_ref().map(|tx| tx.send(state));
     }
 }
+

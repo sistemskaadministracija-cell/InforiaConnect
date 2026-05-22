@@ -159,3 +159,4 @@ pub fn delete_printer(name: &PCWSTR) -> ResultType<()> {
 
     Ok(())
 }
+

@@ -24,3 +24,4 @@ pub fn create_cliprdr_context(
     let boxed = unix::macos::pasteboard_context::create_pasteboard_context()? as Box<_>;
     Ok(boxed)
 }
+

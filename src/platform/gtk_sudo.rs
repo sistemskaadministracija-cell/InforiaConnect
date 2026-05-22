@@ -40,7 +40,7 @@ enum Message {
 }
 
 pub fn run(cmds: Vec<&str>) -> ResultType<()> {
-    // rustdesk service kill `rustdesk --` processes
+    // InforiaConnect service kill `InforiaConnect --` processes
     let second_arg = std::env::args().nth(1).unwrap_or_default();
     let cmd_mode =
         second_arg.starts_with("--") && second_arg != "--tray" && second_arg != "--no-server";
@@ -771,3 +771,4 @@ fn quote_shell_arg(arg: &str, add_splash_if_match: bool) -> String {
     }
     rv
 }
+

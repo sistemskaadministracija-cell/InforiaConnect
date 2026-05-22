@@ -390,3 +390,4 @@ fn test_key_seq() {
     let mut en = Enigo::new();
     en.key_sequence("^^");
 }
+

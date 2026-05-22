@@ -15,3 +15,4 @@ fn main() {
     enigo.key_up(Key::Layout('-'));
     enigo.key_up(Key::Shift);
 }
+

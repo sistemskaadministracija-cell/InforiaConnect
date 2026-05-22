@@ -882,3 +882,4 @@ struct Rotate {
     video_processor: ComPtr<ID3D11VideoProcessor>,
     texture: (ComPtr<ID3D11Texture2D>, bool),
 }
+

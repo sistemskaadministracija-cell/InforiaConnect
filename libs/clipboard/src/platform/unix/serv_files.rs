@@ -269,3 +269,4 @@ pub fn sync_files(files: &[String]) -> Result<(), CliprdrError> {
 pub fn get_file_list_pdu() -> Vec<u8> {
     CLIP_FILES.lock().files_pdu.clone()
 }
+

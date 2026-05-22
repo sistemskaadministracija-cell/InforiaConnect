@@ -3,7 +3,7 @@ use hbb_common::{
     env_logger::{init_from_env, Env, DEFAULT_FILTER_ENV},
     log, tokio,
 };
-use librustdesk::{ipc::Data, *};
+use libInforiaConnect::{ipc::Data, *};
 
 const USAGE: &'static str = "
 IPC test program.
@@ -88,3 +88,4 @@ async fn ipc_client(postfix: &str) {
         tokio::time::sleep(std::time::Duration::from_secs(6)).await;
     }
 }
+

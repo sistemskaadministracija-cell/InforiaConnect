@@ -213,3 +213,4 @@ extern "C" {
     pub fn GetLastMsg() -> PCHAR;
     pub fn SetPrintErrMsg(b: BOOL);
 }
+

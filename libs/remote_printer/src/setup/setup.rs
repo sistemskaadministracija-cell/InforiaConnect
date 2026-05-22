@@ -92,3 +92,4 @@ pub fn uninstall_printer(app_name: &str) {
     allow_err!(uninstall_driver(&rd_printer_driver_name));
     allow_err!(check_delete_local_port(&rd_printer_port));
 }
+

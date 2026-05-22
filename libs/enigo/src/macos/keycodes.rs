@@ -118,3 +118,4 @@ pub const kVK_ANSI_N                 : u16 = 0x2D;
 pub const kVK_ANSI_M                 : u16 = 0x2E;
 pub const kVK_ANSI_Period            : u16 = 0x2F;
 pub const kVK_ANSI_Grave             : u16 = 0x32;
+

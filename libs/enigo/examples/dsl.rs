@@ -9,3 +9,4 @@ fn main() {
     // write text and select all
     enigo.key_sequence_parse("{+UNICODE}{{Hello World!}} ❤️{-UNICODE}{+CTRL}a{-CTRL}");
 }
+

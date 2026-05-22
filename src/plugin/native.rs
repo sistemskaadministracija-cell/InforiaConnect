@@ -10,10 +10,10 @@ use super::{
     errno::ERR_NOT_HANDLED,
     native_handlers::{Callable, NATIVE_HANDLERS_REGISTRAR},
 };
-/// The native returned value from librustdesk native.
+/// The native returned value from libInforiaConnect native.
 ///
 /// [Note]
-/// The data is owned by librustdesk.
+/// The data is owned by libInforiaConnect.
 #[repr(C)]
 pub struct NativeReturnValue {
     pub return_type: c_int,
@@ -38,3 +38,4 @@ pub(super) extern "C" fn cb_native_data(
         data: std::ptr::null(),
     });
 }
+

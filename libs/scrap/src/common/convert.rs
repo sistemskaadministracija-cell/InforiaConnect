@@ -234,3 +234,4 @@ pub fn convert(captured: &PixelBuffer, pixfmt: crate::Pixfmt, dst: &mut Vec<u8>)
     }
     Ok(())
 }
+

@@ -254,3 +254,4 @@ pub fn get_desktop_rect_for_uinput() -> Option<(i32, i32, i32, i32)> {
     }
     Some((min_x, max_x, min_y, max_y))
 }
+

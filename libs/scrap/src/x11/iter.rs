@@ -136,3 +136,4 @@ unsafe fn get_pixfmt(conn: *mut xcb_connection_t, root: xcb_window_t) -> Option<
         _ => None,
     }
 }
+

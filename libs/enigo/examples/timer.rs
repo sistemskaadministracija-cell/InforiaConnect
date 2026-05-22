@@ -20,3 +20,4 @@ fn main() {
     enigo.key_click(Key::Layout('a'));
     enigo.key_up(Key::Control);
 }
+

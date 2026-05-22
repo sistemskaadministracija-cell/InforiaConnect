@@ -545,3 +545,4 @@ pub fn screen_size() -> (u16, u16, u16) {
 pub fn is_start() -> Option<bool> {
     android::is_start()
 }
+

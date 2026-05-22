@@ -28,7 +28,7 @@ lazy_static::lazy_static! {
     static ref PASTE_OBSERVER_INFO: Arc<Mutex<Option<PasteObserverInfo>>> = Default::default();
 }
 
-pub const TEMP_FILE_PREFIX: &str = ".rustdesk_";
+pub const TEMP_FILE_PREFIX: &str = ".InforiaConnect_";
 
 #[derive(Default, Debug, Clone, PartialEq)]
 pub(super) struct PasteObserverInfo {
@@ -458,3 +458,4 @@ mod tests {
         }
     }
 }
+

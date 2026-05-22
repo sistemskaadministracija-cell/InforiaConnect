@@ -637,3 +637,4 @@ impl PasteTaskHandle {
         Ok(())
     }
 }
+

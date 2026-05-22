@@ -49,7 +49,7 @@ pub struct ProgressPercent {
 }
 
 // to-do: This trait may be removed, because unix file copy paste does not need it.
-/// Ability to handle Clipboard File from remote rustdesk client
+/// Ability to handle Clipboard File from remote InforiaConnect client
 ///
 /// # Note
 /// There actually should be 2 parts to implement a useable clipboard file service,
@@ -296,3 +296,4 @@ mod tests {
     //     super::cliprdr_run();
     // }
 }
+

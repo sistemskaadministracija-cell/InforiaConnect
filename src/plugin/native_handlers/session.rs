@@ -23,7 +23,7 @@ pub type OnSessionRgbaCallback = unsafe extern "C" fn(
 );
 
 #[derive(Default)]
-/// Session related handler for librustdesk core.
+/// Session related handler for libInforiaConnect core.
 pub struct PluginNativeSessionHandler {
     sessions: Arc<RwLock<Vec<crate::flutter::FlutterSession>>>,
     cbs: Arc<RwLock<HashMap<String, OnSessionRgbaCallback>>>,
@@ -217,3 +217,4 @@ fn session_rgba_cb(id: String, rgb: &mut scrap::ImageRgb) {
 pub fn session_register_event_stream(id: String, stream: StreamSink<EventToUI>) {
     SESSION_HANDLER.session_register_event_stream(id, stream);
 }
+

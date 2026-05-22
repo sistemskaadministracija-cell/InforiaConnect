@@ -15,3 +15,4 @@ use std::sync::{Arc, Mutex};
 lazy_static::lazy_static! {
     pub static ref ENABLE_RETINA: Arc<Mutex<bool>> = Arc::new(Mutex::new(true));
 }
+

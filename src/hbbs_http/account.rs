@@ -37,7 +37,7 @@ pub struct DeviceInfo {
     #[serde(default)]
     pub r#type: String,
 
-    /// device name from rustdesk client,
+    /// device name from InforiaConnect client,
     /// browser info(name + version) from browser
     #[serde(default)]
     pub name: String,
@@ -364,3 +364,4 @@ impl OidcSession {
         OIDC_SESSION.read().unwrap().get_result_()
     }
 }
+

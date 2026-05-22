@@ -75,3 +75,4 @@ pub(super) fn create_pasteboard_file_url_provider(
     let provider: Id<PasteboardFileUrlProvider> = unsafe { msg_send_id![super(provider), init] };
     provider
 }
+

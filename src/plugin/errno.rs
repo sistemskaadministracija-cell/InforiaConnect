@@ -3,9 +3,9 @@
 pub const ERR_SUCCESS: i32 = 0;
 
 // ======================================================
-// Errors from the plugins, must be handled by RustDesk
+// Errors from the plugins, must be handled by InforiaConnect
 
-pub const ERR_RUSTDESK_HANDLE_BASE: i32 = 10000;
+pub const ERR_InforiaConnect_HANDLE_BASE: i32 = 10000;
 
 // not loaded
 pub const ERR_PLUGIN_LOAD: i32 = 10001;
@@ -28,7 +28,7 @@ pub const ERR_CALL_CONFIG_VALUE: i32 = 10303;
 pub const ERR_NOT_HANDLED: i32 = 10401;
 
 // ======================================================
-// Errors from RustDesk callbacks.
+// Errors from InforiaConnect callbacks.
 
 pub const ERR_CALLBACK_HANDLE_BASE: i32 = 20000;
 pub const ERR_CALLBACK_PLUGIN_ID: i32 = 20001;
@@ -48,3 +48,4 @@ pub const ERR_PLUGIN_HANDLE_BASE: i32 = 30000;
 pub const EER_CALL_FAILED: i32 = 30021;
 pub const ERR_PEER_ON_FAILED: i32 = 40012;
 pub const ERR_PEER_OFF_FAILED: i32 = 40012;
+

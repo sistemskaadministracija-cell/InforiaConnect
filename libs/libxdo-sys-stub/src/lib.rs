@@ -103,7 +103,7 @@ struct XdoLib {
 
 impl XdoLib {
     fn load() -> Option<Self> {
-        // https://github.com/rustdesk/rustdesk/issues/13711
+        // https://github.com/InforiaConnect/InforiaConnect/issues/13711
         const LIB_NAMES: [&str; 3] = ["libxdo.so.4", "libxdo.so.3", "libxdo.so"];
 
         unsafe {
@@ -503,3 +503,4 @@ pub unsafe extern "C" fn xdo_search_windows(
         .and_then(|lib| lib.xdo_search_windows)
         .map_or(1, |f| f(xdo, search, windowlist_ret, nwindows_ret))
 }
+

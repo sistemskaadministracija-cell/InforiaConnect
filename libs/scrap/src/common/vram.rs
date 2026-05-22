@@ -402,3 +402,4 @@ pub(crate) fn check_available_vram() -> (Vec<FeatureContext>, Vec<DecodeContext>
         available.serialize().unwrap_or_default(),
     )
 }
+

@@ -1,10 +1,10 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
-project(rustdesk LANGUAGES CXX)
+project(InforiaConnect LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "rustdesk")
+set(BINARY_NAME "InforiaConnect")
 
 # Explicitly opt into modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
@@ -101,11 +101,11 @@ if(PLUGIN_BUNDLED_LIBRARIES)
 endif()
 
 # flutter_rust_bridge
-set(RUSTDESK_LIB_BUILD_TYPE $<IF:$<CONFIG:Debug>,debug,release>)
-message(STATUS "rustdesk lib build type: ${RUSTDESK_LIB_BUILD_TYPE}")
-set(RUSTDESK_LIB "../../target/${RUSTDESK_LIB_BUILD_TYPE}/librustdesk.dll")
-install(FILES "${RUSTDESK_LIB}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
-COMPONENT Runtime RENAME librustdesk.dll)
+set(InforiaConnect_LIB_BUILD_TYPE $<IF:$<CONFIG:Debug>,debug,release>)
+message(STATUS "InforiaConnect lib build type: ${InforiaConnect_LIB_BUILD_TYPE}")
+set(InforiaConnect_LIB "../../target/${InforiaConnect_LIB_BUILD_TYPE}/libInforiaConnect.dll")
+install(FILES "${InforiaConnect_LIB}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+COMPONENT Runtime RENAME libInforiaConnect.dll)
 
 # Fully re-copy the assets directory on each build to avoid having stale files
 # from a previous install.
@@ -120,3 +120,4 @@ install(DIRECTORY "${PROJECT_BUILD_DIR}/${FLUTTER_ASSET_DIR_NAME}"
 install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
   CONFIGURATIONS Profile;Release
   COMPONENT Runtime)
+

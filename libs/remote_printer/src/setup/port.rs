@@ -126,3 +126,4 @@ pub fn check_delete_local_port(port: &PCWSTR) -> ResultType<()> {
     }
     Ok(())
 }
+

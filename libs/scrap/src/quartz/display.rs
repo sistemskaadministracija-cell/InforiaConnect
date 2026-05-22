@@ -85,3 +85,4 @@ impl Display {
         unsafe { CGDisplayBounds(self.0) }
     }
 }
+

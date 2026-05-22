@@ -99,3 +99,4 @@ fn common_enum<T, R: Sized>(
 
     Ok(on_no_data())
 }
+

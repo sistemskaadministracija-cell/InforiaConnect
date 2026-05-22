@@ -33,3 +33,4 @@ fn build_c_impl() {
 fn main() {
     build_c_impl();
 }
+

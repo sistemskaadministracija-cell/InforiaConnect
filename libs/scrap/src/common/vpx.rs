@@ -24,3 +24,4 @@ impl Default for vpx_image_t {
 }
 
 include!(concat!(env!("OUT_DIR"), "/vpx_ffi.rs"));
+

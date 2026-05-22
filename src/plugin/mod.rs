@@ -139,7 +139,7 @@ fn get_share_dir() -> ResultType<PathBuf> {
 #[inline]
 fn get_plugins_dir() -> ResultType<PathBuf> {
     Ok(get_share_dir()?
-        .join("RustDesk")
+        .join("InforiaConnect")
         .join(PLUGIN_SOURCE_LOCAL_DIR))
 }
 
@@ -186,3 +186,4 @@ fn free_c_ptr(p: *mut c_void) {
         }
     }
 }
+

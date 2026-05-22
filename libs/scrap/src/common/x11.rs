@@ -137,3 +137,4 @@ impl Display {
         self.0.server().get_shm_status()
     }
 }
+
