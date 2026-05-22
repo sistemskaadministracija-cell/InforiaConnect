@@ -55,6 +55,7 @@ jobs:
           name: bridge-artifact
           path: |
             ./src/bridge_generated.rs
+            ./src/bridge_generated.io.rs
             ./flutter/lib/generated_bridge.dart
             ./flutter/macos/Runner/bridge_generated.h
             ./flutter/windows/runner/bridge_generated.h
