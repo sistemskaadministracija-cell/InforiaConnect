@@ -31,11 +31,16 @@ jobs:
           channel: "stable"
           flutter-version: ${{ env.FLUTTER_VERSION }}
 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+
       - name: Run bridge generator
         shell: bash
         run: |
           pip3 install pygments
-          cargo install flutter_rust_bridge_codegen --version "1.80.1" --features "uuid" || true
+          cargo install flutter_rust_bridge_codegen --version "1.80.1" --features "uuid"
           pushd flutter && flutter pub get && popd
           ~/.cargo/bin/flutter_rust_bridge_codegen \
             --rust-input ./src/flutter_ffi.rs \
@@ -43,7 +48,7 @@ jobs:
             --c-output ./flutter/macos/Runner/bridge_generated.h \
             --extra-c-output-path ./flutter/windows/runner/ \
             --extra-c-output-path ./flutter/linux/
-
+            
       - name: Upload bridge artifacts
         uses: actions/upload-artifact@v4
         with:
