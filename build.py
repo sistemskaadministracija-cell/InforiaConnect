@@ -14,7 +14,7 @@ from pathlib import Path
 windows = platform.platform().startswith('Windows')
 osx = platform.platform().startswith(
     'Darwin') or platform.platform().startswith("macOS")
-hbb_name = 'rustdesk' + ('.exe' if windows else '')
+hbb_name = 'InforiaConnect' + ('.exe' if windows else '')
 exe_path = 'target/release/' + hbb_name
 if windows:
     flutter_build_dir = 'build/windows/x64/runner/Release/'
@@ -434,32 +434,49 @@ def build_flutter_arch_manjaro(version, features):
 def build_flutter_windows(version, features, skip_portable_pack):
     if not skip_cargo:
         system2(f'cargo build --features {features} --lib --release')
-        if not os.path.exists("target/release/libInforiaConnect.dll"):
+        # Updated to check for your custom compiled library name
+        if not os.path.exists("target/release/libInforiaConnect.dll") and not os.path.exists("target/release/InforiaConnect.dll"):
             print("cargo build failed, please check rust source code.")
             exit(-1)
+            
     os.chdir('flutter')
     system2('flutter build windows --release')
     os.chdir('..')
     shutil.copy2('target/release/deps/dylib_virtual_display.dll',
                  flutter_build_dir_2)
+                 
     if skip_portable_pack:
         return
+        
     os.chdir('libs/portable')
     system2('pip3 install -r requirements.txt')
+    
+    # FIX 1: Updated the target executable name parameter from rustdesk.exe to InforiaConnect.exe
     system2(
-        f'python3 ./generate.py -f ../../{flutter_build_dir_2} -o . -e ../../{flutter_build_dir_2}/rustdesk.exe')
+        f'python3 ./generate.py -f ../../{flutter_build_dir_2} -o . -e ../../{flutter_build_dir_2}/InforiaConnect.exe')
     os.chdir('../..')
-    if os.path.exists('./rustdesk_portable.exe'):
+    
+    # FIX 2: Swapped the internal hardcoded paths to output your custom binary names instead of rustdesk legacy naming
+    if os.path.exists('./InforiaConnect_portable.exe'):
         os.replace('./target/release/rustdesk-portable-packer.exe',
-                   './rustdesk_portable.exe')
+                   './InforiaConnect_portable.exe')
     else:
-        os.rename('./target/release/rustdesk-portable-packer.exe',
-                  './rustdesk_portable.exe')
+        if os.path.exists('./target/release/rustdesk-portable-packer.exe'):
+            os.rename('./target/release/rustdesk-portable-packer.exe',
+                      './InforiaConnect_portable.exe')
+        else:
+            # Fallback if packer binary matches your custom rename sequence
+            os.rename('./target/release/InforiaConnect-portable-packer.exe',
+                      './InforiaConnect_portable.exe')
+                      
     print(
-        f'output location: {os.path.abspath(os.curdir)}/rustdesk_portable.exe')
-    os.rename('./rustdesk_portable.exe', f'./rustdesk-{version}-install.exe')
+        f'output location: {os.path.abspath(os.curdir)}/InforiaConnect_portable.exe')
+        
+    # FIX 3: Output structural renaming mapping
+    os.rename('./InforiaConnect_portable.exe', f'./InforiaConnect-{version}-install.exe')
+    
     print(
-        f'output location: {os.path.abspath(os.curdir)}/rustdesk-{version}-install.exe')
+        f'output location: {os.path.abspath(os.curdir)}/InforiaConnect-{version}-install.exe')
 
 
 def main():
