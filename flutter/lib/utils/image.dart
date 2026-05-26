@@ -131,3 +131,4 @@ class ImagePainter extends CustomPainter {
     return oldDelegate != this;
   }
 }
+

@@ -690,3 +690,4 @@ class CameraRawPointerMouseRegion extends StatelessWidget {
     );
   }
 }
+

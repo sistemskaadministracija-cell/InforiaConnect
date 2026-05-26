@@ -299,3 +299,4 @@ void handleOption(Map<String, dynamic> evt) {
   updateOption(
       evt['location'], evt['id'], evt['peer'] ?? '', evt['key'], evt['value']);
 }
+

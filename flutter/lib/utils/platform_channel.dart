@@ -43,3 +43,4 @@ class RdPlatformChannel {
     return _hostMethodChannel.invokeMethod("terminate");
   }
 }
+

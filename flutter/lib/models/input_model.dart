@@ -2108,3 +2108,4 @@ class InputModel {
   Future<void> onMobilePower() async =>
       await tapHidKey(PhysicalKeyboardKey.power.usbHidUsage & 0xFFFF);
 }
+

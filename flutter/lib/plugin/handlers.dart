@@ -77,3 +77,4 @@ class NativeUiHandler extends NativeHandler {
     PluginUiManager.instance.registerEntry(title, widget);
   }
 }
+

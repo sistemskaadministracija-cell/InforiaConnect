@@ -389,3 +389,4 @@ class GestureInfo extends StatelessWidget {
         ));
   }
 }
+

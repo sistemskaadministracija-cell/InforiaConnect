@@ -317,3 +317,4 @@ class PluginManager with ChangeNotifier {
 }
 
 PluginManager get pluginManager => PluginManager.instance;
+

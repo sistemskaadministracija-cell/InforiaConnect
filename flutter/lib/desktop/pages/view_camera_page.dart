@@ -715,3 +715,4 @@ class _ImagePaintState extends State<ImagePaint> {
     }
   }
 }
+

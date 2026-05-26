@@ -338,3 +338,4 @@ class TrackpadSpeedWidgetState extends State<TrackpadSpeedWidget> {
     );
   }
 }
+

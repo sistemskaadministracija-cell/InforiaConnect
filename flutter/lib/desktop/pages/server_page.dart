@@ -1446,3 +1446,4 @@ class __FileTransferLogPageState extends State<_FileTransferLogPage> {
     );
   }
 }
+

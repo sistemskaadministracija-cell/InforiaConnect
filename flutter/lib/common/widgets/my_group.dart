@@ -307,3 +307,4 @@ class _MyGroupState extends State<MyGroup> {
     )).marginSymmetric(horizontal: 12).marginOnly(bottom: 6);
   }
 }
+

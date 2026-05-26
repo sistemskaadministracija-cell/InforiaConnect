@@ -1539,3 +1539,4 @@ class TabbarTheme extends ThemeExtension<TabbarTheme> {
     return Theme.of(context).extension<ColorThemeExtension>()!;
   }
 }
+

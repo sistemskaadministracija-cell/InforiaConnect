@@ -366,3 +366,4 @@ removeSharedStates(String id) {
   UnreadChatCountState.delete(id);
   if (isMobile) ConnectionTypeState.delete(id);
 }
+

@@ -36,3 +36,4 @@ Widget getConnectionPageTitle(BuildContext context, bool isWeb) {
     ],
   );
 }
+

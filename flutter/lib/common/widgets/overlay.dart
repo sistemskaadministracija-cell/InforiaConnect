@@ -672,3 +672,4 @@ class BlockableOverlay extends StatelessWidget {
     return Overlay(key: state.key, initialEntries: initialEntries);
   }
 }
+

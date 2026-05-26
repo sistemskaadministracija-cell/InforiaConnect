@@ -596,3 +596,4 @@ class MyGroupPeerView extends BasePeersView {
     return true;
   }
 }
+

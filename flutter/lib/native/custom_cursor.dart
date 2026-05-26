@@ -42,3 +42,4 @@ MouseCursor buildCursorOfCache(
     return FlutterCustomMemoryImageCursor(key: key);
   }
 }
+

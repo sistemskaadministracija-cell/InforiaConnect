@@ -50,7 +50,7 @@ class EventToUI_Texture implements EventToUI {
   bool get field1 => f1;
 }
 
-class RustdeskImpl {
+class InforiaConnectImpl {
   Future<void> stopGlobalEventStream({required String appType, dynamic hint}) {
     throw UnimplementedError("stopGlobalEventStream");
   }
@@ -2039,3 +2039,4 @@ class RustdeskImpl {
 
   void dispose() {}
 }
+

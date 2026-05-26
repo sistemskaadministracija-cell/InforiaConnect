@@ -903,3 +903,4 @@ class _JoystickPainter extends CustomPainter {
         oldDelegate._isPressed != _isPressed;
   }
 }
+

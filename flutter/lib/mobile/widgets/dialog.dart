@@ -232,3 +232,4 @@ void setPrivacyModeDialog(
     );
   }, backDismiss: true, clickMaskDismiss: true);
 }
+

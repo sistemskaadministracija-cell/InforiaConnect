@@ -163,3 +163,4 @@ class _ScanPageState extends State<ScanPage> {
     }
   }
 }
+

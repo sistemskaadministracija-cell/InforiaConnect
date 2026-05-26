@@ -178,3 +178,4 @@ class ChatPage extends StatelessWidget implements PageShape {
     );
   }
 }
+

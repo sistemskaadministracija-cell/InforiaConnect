@@ -124,3 +124,4 @@ Future<http.Response> delete(Uri url,
   return await HttpService()
       .sendRequest(url, HttpMethod.delete, body: body, headers: headers);
 }
+

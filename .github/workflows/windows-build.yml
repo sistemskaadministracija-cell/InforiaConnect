@@ -48,6 +48,9 @@ jobs:
             --c-output ./flutter/macos/Runner/bridge_generated.h \
             --extra-c-output-path ./flutter/windows/runner/ \
             --extra-c-output-path ./flutter/linux/
+          pushd flutter
+          flutter pub run build_runner build --delete-conflicting-outputs
+          popd
             
       - name: Upload bridge artifacts
         uses: actions/upload-artifact@v4
@@ -57,6 +60,7 @@ jobs:
             ./src/bridge_generated.rs
             ./src/bridge_generated.io.rs
             ./flutter/lib/generated_bridge.dart
+            ./flutter/lib/generated_bridge.freezed.dart
             ./flutter/macos/Runner/bridge_generated.h
             ./flutter/windows/runner/bridge_generated.h
             ./flutter/linux/bridge_generated.h

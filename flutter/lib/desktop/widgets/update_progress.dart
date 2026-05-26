@@ -265,3 +265,4 @@ class UpdateProgressState extends State<UpdateProgress> {
     );
   }
 }
+

@@ -43,3 +43,4 @@ class RefreshWrapperState extends State<RefreshWrapper> {
     el.visitChildren(_rebuildElement);
   }
 }
+

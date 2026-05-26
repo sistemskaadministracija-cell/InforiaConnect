@@ -5,7 +5,7 @@ import 'package:flutter_hbb/generated_bridge.dart'
 final platformFFI = PlatformFFI.instance;
 final localeName = PlatformFFI.localeName;
 
-RustdeskImpl get bind => platformFFI.ffiBind;
+InforiaConnectImpl get bind => platformFFI.ffiBind;
 
 String ffiGetByName(String name, [String arg = '']) {
   return PlatformFFI.getByName(name, arg);
@@ -14,3 +14,4 @@ String ffiGetByName(String name, [String arg = '']) {
 void ffiSetByName(String name, [String value = '']) {
   PlatformFFI.setByName(name, value);
 }
+

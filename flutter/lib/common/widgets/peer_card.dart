@@ -1579,3 +1579,4 @@ void connectInPeerTab(BuildContext context, Peer peer, PeerTabIndex tab,
       isTcpTunneling: isTcpTunneling,
       isRDP: isRDP);
 }
+

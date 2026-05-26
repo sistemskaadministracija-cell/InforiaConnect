@@ -4187,3 +4187,4 @@ Future<void> initializeCursorAndCanvas(FFI ffi) async {
 clearWaitingForImage(OverlayDialogManager? dialogManager, SessionID sessionId) {
   dialogManager?.dismissByTag('$sessionId-waiting-for-image');
 }
+

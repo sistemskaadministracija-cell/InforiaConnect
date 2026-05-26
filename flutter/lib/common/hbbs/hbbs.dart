@@ -300,3 +300,4 @@ class DeviceGroupPayload {
     return map;
   }
 }
+

@@ -1207,3 +1207,4 @@ class CursorPaint extends StatelessWidget {
     );
   }
 }
+

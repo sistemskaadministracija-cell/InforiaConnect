@@ -154,3 +154,4 @@ abstract class CustomScaleControls<T extends StatefulWidget> extends State<T> {
     }
   }
 }
+

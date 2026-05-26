@@ -725,3 +725,4 @@ class FABLocation extends FloatingActionButtonLocation {
     return Offset(offset.dx + offsetX, offset.dy + offsetY);
   }
 }
+

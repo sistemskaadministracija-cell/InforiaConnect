@@ -326,3 +326,4 @@ class FileRenamenLog {
           newName: d['newName'] ?? '',
         );
 }
+

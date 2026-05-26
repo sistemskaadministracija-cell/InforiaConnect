@@ -24,3 +24,4 @@ class WebSettingsPage extends StatelessWidget {
     );
   }
 }
+

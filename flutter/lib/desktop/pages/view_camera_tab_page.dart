@@ -520,3 +520,4 @@ class _ViewCameraTabPageState extends State<ViewCameraTabPage> {
     return returnValue;
   }
 }
+

@@ -495,3 +495,4 @@ class TerminalModel with ChangeNotifier {
     super.dispose();
   }
 }
+

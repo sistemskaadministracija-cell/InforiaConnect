@@ -2800,3 +2800,4 @@ class EdgeThicknessControl extends StatelessWidget {
     return slider;
   }
 }
+

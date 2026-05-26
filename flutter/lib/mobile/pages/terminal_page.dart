@@ -439,3 +439,4 @@ class _TerminalPageState extends State<TerminalPage>
   @override
   bool get wantKeepAlive => true;
 }
+
