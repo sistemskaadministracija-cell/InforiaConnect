@@ -150,11 +150,14 @@ jobs:
           sed -i '/dpiAware/d' res/manifest.xml
           pushd ./libs/portable
           pip3 install -r requirements.txt
-          python3 ./generate.py -f ../../InforiaConnect/ -o . -e ../../InforiaConnect/rustdesk.exe
+          python3 ./generate.py \
+            -f ../../flutter/build/windows/x64/runner/Release/ \
+            -o . \
+            -e ../../flutter/build/windows/x64/runner/Release/InforiaConnect.exe
           popd
           mkdir -p ./Output
-          mv ./target/release/rustdesk-portable-packer.exe ./Output/InforiaConnect-Windows-Setup.exe
-
+          mv ./target/release/InforiaConnect-portable-packer.exe ./Output/InforiaConnect-Windows-Setup.exe
+          
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
