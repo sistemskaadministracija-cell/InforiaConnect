@@ -88,20 +88,28 @@ if __name__ == '__main__':
     parser.add_option("-l", "--level", dest="level", type="int",
                       help="compression level, default is 11, highest", default=11)
     (options, args) = parser.parse_args()
-    folder = options.folder or './rustdesk'
+    
+    # 1. Normalize the asset directory path directly from arguments
+    folder = os.path.abspath(options.folder or './rustdesk')
     output_folder = os.path.abspath(options.output_folder or './')
 
-    if not options.executable:
-        options.executable = 'rustdesk.exe'
-    if not options.executable.startswith(folder):
-        options.executable = folder + '/' + options.executable
-    exe: str = os.path.abspath(options.executable)
-    if not exe.startswith(os.path.abspath(folder)):
-        print("The executable must locate in source folder")
+    # 2. Extract just the file name of your executable (e.g., InforiaConnect.exe)
+    exe_filename = os.path.basename(options.executable or 'InforiaConnect.exe')
+    
+    # 3. Create absolute paths to avoid string prefix validation failures
+    absolute_exe_path = os.path.abspath(os.path.join(folder, exe_filename))
+    
+    if not os.path.exists(absolute_exe_path):
+        print(f"Error: Target executable not found at {absolute_exe_path}")
         exit(-1)
-    exe = '.' + exe[len(os.path.abspath(folder)):]
+        
+    # 4. Correctly format the relative reference identifier for the extraction payload
+    exe = '.' + absolute_exe_path[len(folder):].replace('\\', '/')
+    
     print("Executable path: " + exe)
     print("Compression level: " + str(options.level))
+    
+    # Execute steps using clean absolute paths
     md5_table = generate_md5_table(folder, options.level)
     write_package_metadata(md5_table, output_folder, exe)
     write_app_metadata(output_folder)
