@@ -131,7 +131,7 @@ jobs:
 
       - name: Install FFmpeg via vcpkg
         run: |
-          C:\vcpkg\vcpkg.exe install ffmpeg[core,avcodec,avformat,swscale,avdevice]:x64-windows-static --triplet x64-windows-static --classic
+          C:\vcpkg\vcpkg.exe install --triplet x64-windows-static
 
       - name: Fix FFmpeg Header Paths for MSVC
         shell: pwsh
