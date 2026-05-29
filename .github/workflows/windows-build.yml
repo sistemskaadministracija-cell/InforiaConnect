@@ -10,6 +10,8 @@ env:
   RUST_VERSION: "1.75"
   VCPKG_COMMIT_ID: "120deac3062162151622ca4860575a33844ba10b"
   LLVM_VERSION: "15.0.6"
+  CARGO_NET_RETRY: 10                     # <-- Added: Retries failed network calls 10 times
+  CARGO_HTTP_MULTIPLEXING: "false"        # <-- Added: Bypasses HTTP/2 Protocol Errors
 
 jobs:
   generate-bridge:
