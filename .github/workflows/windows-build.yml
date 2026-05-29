@@ -127,6 +127,24 @@ jobs:
           ./bootstrap-vcpkg.bat -disableMetrics
           echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
 
+      - name: Flatten FFmpeg Header Include Paths
+        shell: bash
+        run: |
+          if [ -d "C:/vcpkg/installed/x64-windows-static/include/ffmpeg" ]; then
+            echo "Moving nested FFmpeg headers up to the root include folder..."
+            cp -r C:/vcpkg/installed/x64-windows-static/include/ffmpeg/* C:/vcpkg/installed/x64-windows-static/include/
+          else
+            echo "Warning: FFmpeg directory path not found where expected."
+          fi
+
+      - name: Build InforiaConnect Portable Installer
+        shell: bash
+        env:
+          VCPKG_ROOT: 'C:\vcpkg'
+        run: |
+          python3 build.py --portable --hwcodec --flutter --vram 2>&1
+          echo "Exit code: $?"    
+
       - name: Build InforiaConnect Portable Installer
         shell: bash
         env:
