@@ -130,19 +130,24 @@ jobs:
           echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
 
       - name: Flatten FFmpeg Header Include Paths
-        shell: bash
+        shell: pwsh
         run: |
-          FFMPEG_INC="C:/vcpkg/installed/x64-windows-static/include/ffmpeg"
-          ROOT_INC="C:/vcpkg/installed/x64-windows-static/include"
-          if [ -d "$FFMPEG_INC" ]; then
-            echo "Copying library folders explicitly so sub-includes preserve paths..."
-            cp -r "$FFMPEG_INC"/libavutil "$ROOT_INC"/ 2>/dev/null || true
-            cp -r "$FFMPEG_INC"/libavcodec "$ROOT_INC"/ 2>/dev/null || true
-            cp -r "$FFMPEG_INC"/libavformat "$ROOT_INC"/ 2>/dev/null || true
-            cp -r "$FFMPEG_INC"/* "$ROOT_INC"/ 2>/dev/null || true
-          else
-            echo "Warning: FFmpeg directory path not found where expected."
-          fi   
+          $ffmpegInc = "C:/vcpkg/installed/x64-windows-static/include/ffmpeg"
+          $rootInc = "C:/vcpkg/installed/x64-windows-static/include"
+          
+          if (Test-Path $ffmpegInc) {
+              Write-Host "FFmpeg include directory found. Elevating header directories..."
+              
+              # Copy directories recursively if they exist
+              if (Test-Path "$ffmpegInc/libavutil") { Copy-Item -Path "$ffmpegInc/libavutil" -Destination $rootInc -Recurse -Force }
+              if (Test-Path "$ffmpegInc/libavcodec") { Copy-Item -Path "$ffmpegInc/libavcodec" -Destination $rootInc -Recurse -Force }
+              if (Test-Path "$ffmpegInc/libavformat") { Copy-Item -Path "$ffmpegInc/libavformat" -Destination $rootInc -Recurse -Force }
+              if (Test-Path "$ffmpegInc/libswscale") { Copy-Item -Path "$ffmpegInc/libswscale" -Destination $rootInc -Recurse -Force }
+              
+              Write-Host "Header files successfully reorganized for MSVC."
+          } else {
+              Write-Warning "FFmpeg directory path not found at $ffmpegInc"
+          } 
 
       - name: Build InforiaConnect Portable Installer
         shell: bash
