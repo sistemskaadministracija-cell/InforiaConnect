@@ -1382,6 +1382,14 @@ impl Config {
         Self::has_usable_preset_password()
     }
 
+    pub fn matches_permanent_password_plain(plain: &str) -> bool {
+        let (storage, salt) = Self::get_local_permanent_password_storage_and_salt();
+        if !storage.is_empty() {
+             return preset_permanent_password_storage_matches_plain(&storage, &salt, plain);
+        }
+        false
+    }
+
     fn has_usable_preset_password() -> bool {
         let (preset_storage, preset_salt) = Self::get_preset_password_storage_and_salt();
         preset_permanent_password_storage_is_usable_for_auth(&preset_storage, &preset_salt)
