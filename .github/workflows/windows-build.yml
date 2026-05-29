@@ -129,35 +129,52 @@ jobs:
           ./bootstrap-vcpkg.bat -disableMetrics
           echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
 
-      - name: Flatten FFmpeg Header Include Paths
+      - name: Debug vcpkg Include Directory Layout
         shell: pwsh
         run: |
-          $ffmpegInc = "C:/vcpkg/installed/x64-windows-static/include/ffmpeg"
-          $rootInc = "C:/vcpkg/installed/x64-windows-static/include"
+          Write-Host "--- Checking Root Include folder ---"
+          Get-ChildItem -Path "C:\vcpkg\installed\x64-windows-static\include" -ErrorAction SilentlyContinue | Select-Object Name
           
-          if (Test-Path $ffmpegInc) {
-              Write-Host "FFmpeg include directory found. Elevating subdirectories securely..."
-              
-              # Define the core FFmpeg directories we need to move
-              $subDirs = @("libavutil", "libavcodec", "libavformat", "libswscale")
+          Write-Host "--- Checking if nested ffmpeg folder exists ---"
+          if (Test-Path "C:\vcpkg\installed\x64-windows-static\include\ffmpeg") {
+              Get-ChildItem -Path "C:\vcpkg\installed\x64-windows-static\include\ffmpeg" | Select-Object Name
+          } else {
+              Write-Host "No nested 'ffmpeg' directory found."
+          }
+
+      - name: Fix FFmpeg Header Paths for MSVC
+        shell: pwsh
+        run: |
+          $rootInc = "C:\vcpkg\installed\x64-windows-static\include"
+          $ffmpegNestedInc = Join-Path $rootInc "ffmpeg"
+          
+          # 1. If vcpkg dumped directories like libavcodec directly into include/ffmpeg/
+          if (Test-Path $ffmpegNestedInc) {
+              Write-Host "Found nested FFmpeg headers inside 'include/ffmpeg'. Flattening up..."
+              $subDirs = Get-ChildItem -Path $ffmpegNestedInc -Directory
               
               foreach ($dir in $subDirs) {
-                  $sourcePath = Join-Path $ffmpegInc $dir
-                  $destPath = Join-Path $rootInc $dir
-                  
-                  if (Test-Path $sourcePath) {
-                      # Ensure target directory structure exists cleanly
-                      if (!(Test-Path $destPath)) {
-                          New-Item -ItemType Directory -Path $destPath -Force | Out-Null
-                      }
-                      # Copy the contents of the folder directly into the clean target
-                      Copy-Item -Path "$sourcePath/*" -Destination $destPath -Recurse -Force
-                      Write-Host "Successfully flattened: $dir"
+                  $targetPath = Join-Path $rootInc $dir.Name
+                  if (Test-Path $targetPath) {
+                      Remove-Item -Recurse -Force $targetPath
                   }
+                  # Move directories up to C:\vcpkg\installed\x64-windows-static\include\<libav*>
+                  Move-Item -Path $dir.FullName -Destination $rootInc -Force
               }
-              Write-Host "Header restructuring complete."
-          } else {
-              Write-Warning "FFmpeg directory path not found at $ffmpegInc"
+              Remove-Item -Recurse -Force $ffmpegNestedInc
+          }
+          
+          # 2. Double check that the expected directories are now in the right place
+          $requiredFolders = @("libavcodec", "libavutil", "libavformat", "libswscale")
+          foreach ($folder in $requiredFolders) {
+              $checkPath = Join-Path $rootInc $folder
+              if (Test-Path $checkPath) {
+                  Write-Host "Verified header path: $checkPath"
+                  # Print a couple of files just to ensure it's not an empty directory
+                  Get-ChildItem -Path $checkPath | Select-Object -First 2 Name
+              } else {
+                  Write-Error "CRITICAL: $folder is missing from $rootInc. Build will fail."
+              }
           }
               
       - name: Build InforiaConnect Portable Installer
