@@ -131,7 +131,8 @@ jobs:
         shell: bash
         env:
           VCPKG_ROOT: 'C:\vcpkg'
-          CPATH: 'C:\vcpkg\installed\x64-windows-static\include'
+          FFMPEG_DIR: 'C:\vcpkg\installed\x64-windows-static'
+          CPATH: 'C:\vcpkg\installed\x64-windows-static\include;C:\vcpkg\installed\x64-windows-static\include\ffmpeg'
           INCLUDE: 'C:\vcpkg\installed\x64-windows-static\include;C:\vcpkg\installed\x64-windows-static\include\ffmpeg'
           LIB: 'C:\vcpkg\installed\x64-windows-static\lib'
         run: |
