@@ -10,8 +10,8 @@ env:
   RUST_VERSION: "1.75"
   VCPKG_COMMIT_ID: "120deac3062162151622ca4860575a33844ba10b"
   LLVM_VERSION: "15.0.6"
-  CARGO_NET_RETRY: 10                     # <-- Added: Retries failed network calls 10 times
-  CARGO_HTTP_MULTIPLEXING: "false"        # <-- Added: Bypasses HTTP/2 Protocol Errors
+  CARGO_NET_RETRY: 10
+  CARGO_HTTP_MULTIPLEXING: "false"
 
 jobs:
   generate-bridge:
@@ -132,9 +132,14 @@ jobs:
       - name: Flatten FFmpeg Header Include Paths
         shell: bash
         run: |
-          if [ -d "C:/vcpkg/installed/x64-windows-static/include/ffmpeg" ]; then
-            echo "Moving nested FFmpeg headers up to the root include folder..."
-            cp -r C:/vcpkg/installed/x64-windows-static/include/ffmpeg/* C:/vcpkg/installed/x64-windows-static/include/
+          FFMPEG_INC="C:/vcpkg/installed/x64-windows-static/include/ffmpeg"
+          ROOT_INC="C:/vcpkg/installed/x64-windows-static/include"
+          if [ -d "$FFMPEG_INC" ]; then
+            echo "Copying library folders explicitly so sub-includes preserve paths..."
+            cp -r "$FFMPEG_INC"/libavutil "$ROOT_INC"/ 2>/dev/null || true
+            cp -r "$FFMPEG_INC"/libavcodec "$ROOT_INC"/ 2>/dev/null || true
+            cp -r "$FFMPEG_INC"/libavformat "$ROOT_INC"/ 2>/dev/null || true
+            cp -r "$FFMPEG_INC"/* "$ROOT_INC"/ 2>/dev/null || true
           else
             echo "Warning: FFmpeg directory path not found where expected."
           fi   
@@ -144,8 +149,8 @@ jobs:
         env:
           VCPKG_ROOT: 'C:\vcpkg'
           FFMPEG_DIR: 'C:\vcpkg\installed\x64-windows-static'
-          CPATH: 'C:\vcpkg\installed\x64-windows-static\include;C:\vcpkg\installed\x64-windows-static\include\ffmpeg'
-          INCLUDE: 'C:\vcpkg\installed\x64-windows-static\include;C:\vcpkg\installed\x64-windows-static\include\ffmpeg'
+          CPATH: 'C:\vcpkg\installed\x64-windows-static\include'
+          INCLUDE: 'C:\vcpkg\installed\x64-windows-static\include'
           LIB: 'C:\vcpkg\installed\x64-windows-static\lib'
         run: |
           python3 build.py --portable --hwcodec --flutter --vram 2>&1
