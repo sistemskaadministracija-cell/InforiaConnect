@@ -136,19 +136,30 @@ jobs:
           $rootInc = "C:/vcpkg/installed/x64-windows-static/include"
           
           if (Test-Path $ffmpegInc) {
-              Write-Host "FFmpeg include directory found. Elevating header directories..."
+              Write-Host "FFmpeg include directory found. Elevating subdirectories securely..."
               
-              # Copy directories recursively if they exist
-              if (Test-Path "$ffmpegInc/libavutil") { Copy-Item -Path "$ffmpegInc/libavutil" -Destination $rootInc -Recurse -Force }
-              if (Test-Path "$ffmpegInc/libavcodec") { Copy-Item -Path "$ffmpegInc/libavcodec" -Destination $rootInc -Recurse -Force }
-              if (Test-Path "$ffmpegInc/libavformat") { Copy-Item -Path "$ffmpegInc/libavformat" -Destination $rootInc -Recurse -Force }
-              if (Test-Path "$ffmpegInc/libswscale") { Copy-Item -Path "$ffmpegInc/libswscale" -Destination $rootInc -Recurse -Force }
+              # Define the core FFmpeg directories we need to move
+              $subDirs = @("libavutil", "libavcodec", "libavformat", "libswscale")
               
-              Write-Host "Header files successfully reorganized for MSVC."
+              foreach ($dir in $subDirs) {
+                  $sourcePath = Join-Path $ffmpegInc $dir
+                  $destPath = Join-Path $rootInc $dir
+                  
+                  if (Test-Path $sourcePath) {
+                      # Ensure target directory structure exists cleanly
+                      if (!(Test-Path $destPath)) {
+                          New-Item -ItemType Directory -Path $destPath -Force | Out-Null
+                      }
+                      # Copy the contents of the folder directly into the clean target
+                      Copy-Item -Path "$sourcePath/*" -Destination $destPath -Recurse -Force
+                      Write-Host "Successfully flattened: $dir"
+                  }
+              }
+              Write-Host "Header restructuring complete."
           } else {
               Write-Warning "FFmpeg directory path not found at $ffmpegInc"
-          } 
-
+          }
+              
       - name: Build InforiaConnect Portable Installer
         shell: bash
         env:
