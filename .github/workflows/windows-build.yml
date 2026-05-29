@@ -135,15 +135,7 @@ jobs:
             cp -r C:/vcpkg/installed/x64-windows-static/include/ffmpeg/* C:/vcpkg/installed/x64-windows-static/include/
           else
             echo "Warning: FFmpeg directory path not found where expected."
-          fi
-
-      - name: Build InforiaConnect Portable Installer
-        shell: bash
-        env:
-          VCPKG_ROOT: 'C:\vcpkg'
-        run: |
-          python3 build.py --portable --hwcodec --flutter --vram 2>&1
-          echo "Exit code: $?"    
+          fi   
 
       - name: Build InforiaConnect Portable Installer
         shell: bash
