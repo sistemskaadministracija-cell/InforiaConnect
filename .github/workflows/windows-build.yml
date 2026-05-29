@@ -127,36 +127,22 @@ jobs:
           ./bootstrap-vcpkg.bat -disableMetrics
           echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
 
-      - name: Install vcpkg dependencies
-        shell: bash
-        env:
-          VCPKG_DEFAULT_HOST_TRIPLET: x64-windows-static
-        run: |
-          C:/vcpkg/vcpkg install \
-            --triplet x64-windows-static \
-            --x-install-root="C:/vcpkg/installed" \
-            --x-manifest-root="${{ github.workspace }}" \
-            || (find "C:/vcpkg/buildtrees/" -name "*.log" | while read -r f; do echo "$f:"; cat "$f"; done; exit 1)
-
-      - name: Build InforiaConnect
+      - name: Build InforiaConnect Portable Installer
         shell: bash
         run: |
-          python3 build.py --portable --hwcodec --flutter --vram --skip-portable-pack 2>&1
+          # 1. Removed --skip-portable-pack so our fixed build.py handles the full compilation loop natively
+          python3 build.py --portable --hwcodec --flutter --vram 2>&1
           echo "Exit code: $?"
 
-      - name: Build portable installer
+      - name: Prepare Installer Artifact
         shell: bash
         run: |
-          sed -i '/dpiAware/d' res/manifest.xml
-          pushd ./libs/portable
-          pip3 install -r requirements.txt
-          python3 ./generate.py \
-            -f ../../flutter/build/windows/x64/runner/Release/ \
-            -o . \
-            -e ../../flutter/build/windows/x64/runner/Release/InforiaConnect.exe
-          popd
+          # Create the output directory
           mkdir -p ./Output
-          mv ./target/release/InforiaConnect-portable-packer.exe ./Output/InforiaConnect-Windows-Setup.exe
+          
+          # Find the final compiled installer file (handles whatever version number is generated)
+          # and copy it directly to your static target name inside the Output folder
+          mv ./InforiaConnect-*-install.exe ./Output/InforiaConnect-Windows-Setup.exe
           
       - name: Upload installer
         uses: actions/upload-artifact@v4
