@@ -129,8 +129,12 @@ jobs:
 
       - name: Build InforiaConnect Portable Installer
         shell: bash
+        # We add the global VCPKG root and inclusion paths so Clang can find 'vpx/vp8.h'
+        env:
+          VCPKG_ROOT: 'C:\vcpkg'
+          CPATH: 'C:\vcpkg\installed\x64-windows-static\include'
+          INCLUDE: 'C:\vcpkg\installed\x64-windows-static\include'
         run: |
-          # 1. Removed --skip-portable-pack so our fixed build.py handles the full compilation loop natively
           python3 build.py --portable --hwcodec --flutter --vram 2>&1
           echo "Exit code: $?"
 
