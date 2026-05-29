@@ -448,35 +448,42 @@ def build_flutter_windows(version, features, skip_portable_pack):
     if skip_portable_pack:
         return
         
+    # Move into the portable builder directory
     os.chdir('libs/portable')
     system2('pip3 install -r requirements.txt')
     
-    # FIX 1: Updated the target executable name parameter from rustdesk.exe to InforiaConnect.exe
+    # 1. Generate data.bin (combines Flutter files and stamps "InforiaConnect" magic header)
     system2(
         f'python3 ./generate.py -f ../../{flutter_build_dir_2} -o . -e ../../{flutter_build_dir_2}/InforiaConnect.exe')
+        
+    # 2. MISSING STEP ADDED: Compile the actual packer engine binary right here
+    system2('cargo build --release')
+    
+    # Define our source and target paths clearly relative to libs/portable
+    packer_src_1 = './target/release/rustdesk-portable-packer.exe'
+    packer_src_2 = './target/release/InforiaConnect-portable-packer.exe'
+    portable_dest = '../../InforiaConnect_portable.exe'
+    
+    # 3. Move the compiled, data-stitched binary out to the root directory safely
+    if os.path.exists(packer_src_1):
+        shutil.move(packer_src_1, portable_dest)
+    elif os.path.exists(packer_src_2):
+        shutil.move(packer_src_2, portable_dest)
+    else:
+        print("Error: Could not find the compiled portable packer binary inside target/release!")
+        exit(-1)
+        
+    # Jump back out to the main project root directory
     os.chdir('../..')
     
-    # FIX 2: Swapped the internal hardcoded paths to output your custom binary names instead of rustdesk legacy naming
+    # 4. Final step: Finalize filename structure in the root folder
+    final_installer_name = f'./InforiaConnect-{version}-install.exe'
     if os.path.exists('./InforiaConnect_portable.exe'):
-        os.replace('./target/release/rustdesk-portable-packer.exe',
-                   './InforiaConnect_portable.exe')
-    else:
-        if os.path.exists('./target/release/rustdesk-portable-packer.exe'):
-            os.rename('./target/release/rustdesk-portable-packer.exe',
-                      './InforiaConnect_portable.exe')
-        else:
-            # Fallback if packer binary matches your custom rename sequence
-            os.rename('./target/release/InforiaConnect-portable-packer.exe',
-                      './InforiaConnect_portable.exe')
-                      
-    print(
-        f'output location: {os.path.abspath(os.curdir)}/InforiaConnect_portable.exe')
+        if os.path.exists(final_installer_name):
+            os.remove(final_installer_name)
+        os.rename('./InforiaConnect_portable.exe', final_installer_name)
         
-    # FIX 3: Output structural renaming mapping
-    os.rename('./InforiaConnect_portable.exe', f'./InforiaConnect-{version}-install.exe')
-    
-    print(
-        f'output location: {os.path.abspath(os.curdir)}/InforiaConnect-{version}-install.exe')
+    print(f'✨ Success! Output location: {os.path.abspath(os.curdir)}/{final_installer_name}')
 
 
 def main():
