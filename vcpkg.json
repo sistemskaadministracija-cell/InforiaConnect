@@ -62,7 +62,6 @@
       "name": "ffmpeg",
       "host": true,
       "features": [
-        "core",
         "avcodec",
         "avformat",
         "swscale",
@@ -86,7 +85,6 @@
       "name": "ffmpeg",
       "host": false,
       "features": [
-        "core",
         "avcodec",
         "avformat",
         "swscale",
