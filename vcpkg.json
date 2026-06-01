@@ -61,11 +61,8 @@
     {
       "name": "ffmpeg",
       "host": true,
+      "default-features": true,
       "features": [
-        "avcodec",
-        "avformat",
-        "swscale",
-        "avdevice",
         {
           "name": "amf",
           "platform": "((windows | linux) & static)"
@@ -84,11 +81,8 @@
     {
       "name": "ffmpeg",
       "host": false,
+      "default-features": true,
       "features": [
-        "avcodec",
-        "avformat",
-        "swscale",
-        "avdevice",
         {
           "name": "amf",
           "platform": "((windows | linux) & static)"
