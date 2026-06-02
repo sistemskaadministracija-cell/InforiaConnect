@@ -136,10 +136,11 @@ jobs:
       - name: Fix FFmpeg Header Paths for MSVC
         shell: pwsh
         run: |
-          $rootInc = "C:\vcpkg\installed\x64-windows-static\include"
+          # Manifest mode installs local to the repository workspace
+          $rootInc = "${{ github.workspace }}/vcpkg_installed/x64-windows-static/include"
           $required = @("libavcodec", "libavutil", "libavformat", "libswscale")
           
-          Write-Host "Locating FFmpeg headers..."
+          Write-Host "Locating FFmpeg headers in manifest workspace: $rootInc"
           foreach ($folder in $required) {
               $targetPath = Join-Path $rootInc $folder
               
@@ -161,10 +162,10 @@ jobs:
         shell: bash
         env:
           VCPKG_ROOT: 'C:\vcpkg'
-          FFMPEG_DIR: 'C:\vcpkg\installed\x64-windows-static'
-          CPATH: 'C:\vcpkg\installed\x64-windows-static\include'
-          INCLUDE: 'C:\vcpkg\installed\x64-windows-static\include'
-          LIB: 'C:\vcpkg\installed\x64-windows-static\lib'
+          FFMPEG_DIR: '${{ github.workspace }}/vcpkg_installed/x64-windows-static'
+          CPATH: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/include'
+          INCLUDE: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/include'
+          LIB: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib'
         run: |
           python3 build.py --portable --hwcodec --flutter --vram 2>&1
           echo "Exit code: $?"
