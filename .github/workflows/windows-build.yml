@@ -33,11 +33,6 @@ jobs:
           channel: "stable"
           flutter-version: ${{ env.FLUTTER_VERSION }}
 
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@v1
-        with:
-          toolchain: stable
-
       - name: Run bridge generator
         shell: bash
         run: |
@@ -136,7 +131,6 @@ jobs:
       - name: Fix FFmpeg Header Paths for MSVC
         shell: pwsh
         run: |
-          # Manifest mode installs local to the repository workspace
           $rootInc = "${{ github.workspace }}/vcpkg_installed/x64-windows-static/include"
           $required = @("libavcodec", "libavutil", "libavformat", "libswscale")
           
@@ -166,6 +160,7 @@ jobs:
           CPATH: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/include'
           INCLUDE: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/include'
           LIB: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib'
+          RUSTFLAGS: '-L native=${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib'
         run: |
           python3 build.py --portable --hwcodec --flutter --vram 2>&1
           echo "Exit code: $?"
