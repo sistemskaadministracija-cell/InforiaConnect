@@ -159,9 +159,9 @@ jobs:
           VCPKG_ROOT: 'C:\vcpkg'
           FFMPEG_DIR: '${{ github.workspace }}/vcpkg_installed/x64-windows-static'
           CPATH: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/include'
-          # FIX: Append to existing system variables instead of overwriting them
-          INCLUDE: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/include;$INCLUDE'
-          LIB: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib;$LIB'
+          # FIX: Native Bash expansion format using colons and brackets
+          INCLUDE: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/include:${INCLUDE}'
+          LIB: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib:${LIB}'
           RUSTFLAGS: '-L native=${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib'
         run: |
           python3 build.py --portable --hwcodec --flutter --vram 2>&1
