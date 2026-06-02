@@ -62,42 +62,12 @@
       "name": "ffmpeg",
       "host": true,
       "default-features": true,
-      "features": [
-        "swscale",
-        {
-          "name": "amf",
-          "platform": "((windows | linux) & static)"
-        },
-        {
-          "name": "nvcodec",
-          "platform": "((windows | linux) & static)"
-        },
-        {
-          "name": "qsv",
-          "platform": "(windows & static)"
-        }
-      ],
       "platform": "((windows | (linux & !arm32) | osx) & static)"
     },
     {
       "name": "ffmpeg",
       "host": false,
       "default-features": true,
-      "features": [
-        "swscale",
-        {
-          "name": "amf",
-          "platform": "((windows | linux) & static)"
-        },
-        {
-          "name": "nvcodec",
-          "platform": "((windows | linux) & static)"
-        },
-        {
-          "name": "qsv",
-          "platform": "(windows & static)"
-        }
-      ],
       "platform": "((windows | (linux & !arm32) | osx) & static)"
     },
     {
