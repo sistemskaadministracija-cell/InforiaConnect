@@ -156,7 +156,7 @@ jobs:
       - name: Build InforiaConnect Portable Installer
         shell: bash
         env:
-          VCPKG_ROOT: 'C:\vcpkg' # <-- FIXED TYPO HERE (vpckg -> vcpkg)
+          VCPKG_ROOT: 'C:\vcpkg'
           FFMPEG_DIR: '${{ github.workspace }}/vcpkg_installed/x64-windows-static'
           RUSTFLAGS: >-
             -L native=${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib 
@@ -165,6 +165,7 @@ jobs:
             -C link-arg=strmiids.lib 
             -C link-arg=mfplat.lib 
             -C link-arg=mfuuid.lib
+            -C link-arg=/VERBOSE:RPT
           BINDGEN_EXTRA_CLANG_ARGS: "-I${{ github.workspace }}/vcpkg_installed/x64-windows-static/include"
         run: |
           # 1. Clean out any corrupted or pre-existing folders/links safely using the correct spelling
