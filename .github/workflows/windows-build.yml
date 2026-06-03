@@ -156,10 +156,8 @@ jobs:
       - name: Build InforiaConnect Portable Installer
         shell: bash
         env:
-          VCPKG_ROOT: 'C:\vpckg'
+          VCPKG_ROOT: 'C:\vcpkg' # <-- FIXED TYPO HERE (vpckg -> vcpkg)
           FFMPEG_DIR: '${{ github.workspace }}/vcpkg_installed/x64-windows-static'
-          # 1. Target the dynamic CRT (-C target-feature=+crt-static removes /MD, so we ensure standard behavior)
-          # 2. Add extra link-args explicitly for the missing swresample and Windows media foundations
           RUSTFLAGS: >-
             -L native=${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib 
             -C link-arg=/LIBPATH:${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib 
@@ -169,14 +167,14 @@ jobs:
             -C link-arg=mfuuid.lib
           BINDGEN_EXTRA_CLANG_ARGS: "-I${{ github.workspace }}/vcpkg_installed/x64-windows-static/include"
         run: |
-          # 1. Clean out any corrupted or pre-existing folders/links safely
-          powershell -Command "if (Test-Path 'C:\vpkg\installed') { Remove-Item -Recurse -Force 'C:\vpkg\installed' }"
+          # 1. Clean out any corrupted or pre-existing folders/links safely using the correct spelling
+          powershell -Command "if (Test-Path 'C:\vcpkg\installed') { Remove-Item -Recurse -Force 'C:\vcpkg\installed' }"
           
           # 2. Re-create the parent directory structure
-          powershell -Command "New-Item -ItemType Directory -Force -Path 'C:\vpkg\installed'"
+          powershell -Command "New-Item -ItemType Directory -Force -Path 'C:\vcpkg\installed'"
           
-          # 3. Create the Junction Link using native PowerShell
-          powershell -Command "New-Item -ItemType Junction -Path 'C:\vpkg\installed\x64-windows-static' -Value '${{ github.workspace }}\vcpkg_installed\x64-windows-static'"
+          # 3. Create the Junction Link pointing seamlessly to the working manifest dir
+          powershell -Command "New-Item -ItemType Junction -Path 'C:\vcpkg\installed\x64-windows-static' -Value '${{ github.workspace }}\vcpkg_installed\x64-windows-static'"
           
           # 4. Kick off the compilation pipeline
           python3 build.py --portable --hwcodec --flutter --vram 2>&1
