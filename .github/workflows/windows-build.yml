@@ -163,15 +163,22 @@ jobs:
           LIB: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib:${LIB}'
           RUSTFLAGS: '-L native=${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib'
         run: |
-          # Create the global fallback directory structure hwcodec expects
-          mkdir -p /c/vcpkg/installed
+          # 1. Clean out any corrupted or pre-existing folders/links safely
+          powershell -Command "if (Test-Path 'C:\vcpkg\installed') { Remove-Item -Recurse -Force 'C:\vcpkg\installed' }"
           
-          # Symlink your manifest build folder directly into the global path
-          cmd //c "mklink /J C:\vcpkg\installed\x64-windows-static \"${{ github.workspace }}\vcpkg_installed\x64-windows-static\""
+          # 2. Re-create the parent directory structure
+          powershell -Command "New-Item -ItemType Directory -Force -Path 'C:\vcpkg\installed'"
           
-          # Run the main compiler pipeline
+          # 3. Create the Junction Link using native PowerShell to prevent Git BASH path-mangling
+          powershell -Command "New-Item -ItemType Junction -Path 'C:\vcpkg\installed\x64-windows-static' -Value '${{ github.workspace }}\vcpkg_installed\x64-windows-static'"
+          
+          # 4. Quick sanity check to verify the headers are visibly right where hwcodec wants them
+          echo "=== Verifying header presence in global link ==="
+          ls -la /c/vcpkg/installed/x64-windows-static/include/libavutil/attributes.h || echo "WARNING: File link still broken!"
+          
+          # 5. Kick off the compilation pipeline
           python3 build.py --portable --hwcodec --flutter --vram 2>&1
-          echo "Exit code: $?"
+          echo "Build script completed with exit code: $?"
 
       - name: Prepare Installer Artifact
         shell: bash
