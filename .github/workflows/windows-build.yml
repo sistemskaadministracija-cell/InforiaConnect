@@ -158,10 +158,10 @@ jobs:
         env:
           VCPKG_ROOT: 'C:\vcpkg'
           FFMPEG_DIR: '${{ github.workspace }}/vcpkg_installed/x64-windows-static'
-          CPATH: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/include'
-          INCLUDE: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/include:${INCLUDE}'
-          LIB: '${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib:${LIB}'
-          RUSTFLAGS: '-L native=${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib'
+          # Pass paths cleanly directly to the compiler/linker without destroying global INCLUDE/LIB
+          RUSTFLAGS: "-L native=${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib -C link-arg=/LIBPATH:${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib"
+          # This tells bindgen/clang where to look for your extra C headers safely
+          BINDGEN_EXTRA_CLANG_ARGS: "-I${{ github.workspace }}/vcpkg_installed/x64-windows-static/include"
         run: |
           # 1. Clean out any corrupted or pre-existing folders/links safely
           powershell -Command "if (Test-Path 'C:\vcpkg\installed') { Remove-Item -Recurse -Force 'C:\vcpkg\installed' }"
@@ -169,14 +169,10 @@ jobs:
           # 2. Re-create the parent directory structure
           powershell -Command "New-Item -ItemType Directory -Force -Path 'C:\vcpkg\installed'"
           
-          # 3. Create the Junction Link using native PowerShell to prevent Git BASH path-mangling
+          # 3. Create the Junction Link using native PowerShell
           powershell -Command "New-Item -ItemType Junction -Path 'C:\vcpkg\installed\x64-windows-static' -Value '${{ github.workspace }}\vcpkg_installed\x64-windows-static'"
           
-          # 4. Quick sanity check to verify the headers are visibly right where hwcodec wants them
-          echo "=== Verifying header presence in global link ==="
-          ls -la /c/vcpkg/installed/x64-windows-static/include/libavutil/attributes.h || echo "WARNING: File link still broken!"
-          
-          # 5. Kick off the compilation pipeline
+          # 4. Kick off the compilation pipeline
           python3 build.py --portable --hwcodec --flutter --vram 2>&1
           echo "Build script completed with exit code: $?"
 
