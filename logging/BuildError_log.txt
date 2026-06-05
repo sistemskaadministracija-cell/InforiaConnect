@@ -1,180 +1,64 @@
 InforiaConnect Build Error Log
 ==============================
 
-Purpose:
-  Chronological record of confirmed build errors, their root causes, attempted
-  or completed fixes, and validation results.
-
-Timestamp format:
-  ISO 8601 in Europe/Ljubljana local time, including the UTC offset.
+This file contains short summaries of build errors and the fixes attempted.
+Timestamps use Europe/Ljubljana local time.
 
 -------------------------------------------------------------------------------
 
-Error ID: BUILD-2026-06-05-001
-Detected: 2026-06-05T11:34:50+02:00
-Status: Resolved
-GitHub Actions run:
-  Run ID: 27004595665
-  Result: Failure
-
+Timestamp: 2026-06-05T11:34:50+02:00
 Error:
-  - PowerShell failed while creating the
-    `C:\vpkg\installed\x64-windows-static` junction.
-  - The junction target inside the GitHub workspace did not exist.
-  - The step exited with code 1 and a PathNotFound error.
-
-Root cause:
-  - Windows requires the target directory of this junction to exist before
-    `New-Item -ItemType Junction` is executed.
-
-Fix:
-  Timestamp: 2026-06-05T11:36:02+02:00
-  Commit: e48f286b8e5ae5c3a7b6e155df0e2c14f1f804bf
-  - Added defensive directory creation before junction creation.
-
-Validation:
-  - The next workflow passed the junction stage and proceeded to Cargo.
+  The workflow could not create the vcpkg directory junction because its
+  destination directory did not exist.
+Fix attempted:
+  Created the required directory before creating the junction.
+Outcome:
+  Fixed. The following build passed this step.
 
 -------------------------------------------------------------------------------
 
-Error ID: BUILD-2026-06-05-002
-Detected: 2026-06-05T12:39:40+02:00
-Repeated: 2026-06-05T13:51:13+02:00
-Status: Resolved
-GitHub Actions runs:
-  Run ID: 27007346103
-  Run ID: 27010538433
-  Result: Failure
-
+Timestamp: 2026-06-05T12:39:40+02:00
 Error:
-  - Cargo failed to parse manifests for current transitive dependencies,
-    including `idna_adapter 1.2.2` and `home 0.5.12`.
-  - The manifests required the `edition2024` Cargo feature.
-  - The runner was still using Cargo 1.75.0, where Edition 2024 support was not
-    stabilized.
-  - The build orchestration surfaced the failure as exit code 127.
-
-Root cause:
-  - The active build path retained an obsolete Cargo 1.75.0 toolchain.
-  - Removal of Cargo.lock had also allowed transitive dependencies to drift to
-    newer manifests.
-
-Attempted fix:
-  Timestamp: 2026-06-05T12:48:43+02:00
-  Commit: 86a265e00ff0f1c2cc1f83055d5d0293c5895228
-  - Raised the declared Rust environment to 1.81.
-  - The following run proved that Cargo 1.75.0 was still active in the actual
-    workflow path, so this attempt did not resolve the error.
-
-Completed fix:
-  Timestamp: 2026-06-05T14:31:37+02:00
-  Commit: 552d832694421687cf08050b6799cf84ffdb7272
-  - Changed the active Windows workflow toolchain to stable.
-  - Generated and committed Cargo.lock to pin dependency resolution.
-  - Confirmed no active Rust 1.75 override remained.
-
-Validation:
-  - Run 27015000339 passed dependency parsing and proceeded through vcpkg and
-    into Rust linking.
+  Cargo 1.75 could not read dependencies that require Rust Edition 2024.
+Fix attempted:
+  First raised the Rust version to 1.81. That did not affect the active
+  workflow toolchain, so the workflow was then changed to stable Rust and a
+  new Cargo.lock was committed.
+Outcome:
+  Fixed. Cargo passed dependency parsing in the following build.
 
 -------------------------------------------------------------------------------
 
-Error ID: BUILD-2026-06-05-003
-Detected: 2026-06-05T15:35:59+02:00
-Status: Resolved for baseline; accelerated profile remains pending
-GitHub Actions run:
-  Run ID: 27015000339
-  Result: Failure
-
+Timestamp: 2026-06-05T15:35:59+02:00
 Error:
-  - MSVC linker error LNK1181: could not open `swresample.lib`.
-  - A global RUSTFLAGS value forced FFmpeg and hardware-codec libraries into
-    every Rust build script, including unrelated crates such as `quote`,
-    `proc-macro2`, and `getrandom`.
-  - The build orchestration surfaced the failure as exit code 127.
-
-Root cause:
-  - Optional accelerated-codec linkage was applied globally and blocked
-    delivery of the standard software-codec client.
-
-Fix:
-  Timestamp: 2026-06-05T16:06:53+02:00
-  Commit: b1b60fe63640e803824b7cff27e603490684bde6
-  - Split Windows CI into baseline and accelerated profiles.
-  - Made baseline the default release-validation path.
-  - Removed FFmpeg, `hwcodec`, and `vram` from baseline.
-  - Kept acceleration available as an independent manual profile.
-
-Validation:
-  - Run 27019690424 passed the former `swresample.lib` linker point and
-    proceeded to the `magnum-opus` native build.
+  The Windows linker could not find `swresample.lib` because accelerated FFmpeg
+  linkage was being forced into the whole build.
+Fix attempted:
+  Split CI into baseline and accelerated profiles. Baseline excludes FFmpeg,
+  hardware codecs, and VRAM features.
+Outcome:
+  Fixed for the baseline build. The accelerated profile will be handled
+  separately after the installer is working.
 
 -------------------------------------------------------------------------------
 
-Error ID: BUILD-2026-06-05-004
-Detected: 2026-06-05T16:38:45+02:00
-Status: Resolved
-GitHub Actions run:
-  Run ID: 27019690424
-  Result: Failure
-
+Timestamp: 2026-06-05T16:38:45+02:00
 Error:
-  - The `magnum-opus` build script could not find
-    `opus/opus_multistream.h`.
-  - vcpkg installed the baseline packages under the repository-specific
-    `vcpkg_installed` directory, while `magnum-opus` searched under
-    `C:\vcpkg\installed\x64-windows-static\include`.
-  - The build script panicked and Cargo exited unsuccessfully.
-
-Root cause:
-  - The workflow installation root and the native dependency build script's
-    expected vcpkg root were inconsistent.
-
-Fix:
-  Timestamp: 2026-06-05T16:40:36+02:00
-  Commit: 1f28b075c3a31439c3b0f07170d1f0b9b61226a6
-  - Removed the baseline custom `--x-install-root`.
-  - Removed the baseline VCPKG_INSTALLED_ROOT override.
-  - Retained VCPKG_ROOT at `C:\vcpkg`.
-
-Validation:
-  - Run 27021453379 compiled the Rust core, Flutter application, Opus support,
-    and portable packer, then reached final packaging.
+  The Opus build could not find `opus/opus_multistream.h` because vcpkg
+  installed it in a different directory from the one used by the Rust build.
+Fix attempted:
+  Made baseline vcpkg installation and the Rust build use the standard
+  `C:\vcpkg\installed` directory.
+Outcome:
+  Fixed. The following build compiled Opus and reached packaging.
 
 -------------------------------------------------------------------------------
 
-Error ID: BUILD-2026-06-05-005
-Detected: 2026-06-05T17:20:36+02:00
-Status: Fix pushed; GitHub validation in progress
-GitHub Actions run:
-  Run ID: 27021453379
-  Result: Failure
-
+Timestamp: 2026-06-05T17:20:36+02:00
 Error:
-  - `build.py` reported that it could not find the compiled portable packer
-    under `target/release`.
-  - Cargo had successfully compiled `InforiaConnect-portable-packer`, and
-    `generate.py` had successfully generated `data.bin`.
-
-Root cause:
-  - `libs/portable` is a root Cargo workspace member.
-  - Cargo wrote its executable to the repository root `target/release`, while
-    `build.py` searched under `libs/portable/target/release`.
-
-Fix:
-  Timestamp: 2026-06-05T17:25:01+02:00
-  Commit: 0f43b2a992b1c7837746bf25a317f4c90dcc0a45
-  - Changed both supported packer lookup paths to
-    `../../target/release` relative to `libs/portable`.
-  - Clarified the missing-packer error message.
-
-Validation:
-  - Run 27023798667 is compiling this fix.
-
--------------------------------------------------------------------------------
-
-Process update:
-  Timestamp: 2026-06-05T17:30:52+02:00
-  - Created this dedicated build-error ledger.
-  - Future confirmed build failures, root causes, fixes, timestamps, commits,
-    and validation results must be recorded here.
+  Packaging could not find the compiled portable packer executable.
+Fix attempted:
+  Changed `build.py` to look in the root Cargo workspace `target/release`
+  directory instead of `libs/portable/target/release`.
+Outcome:
+  Validation is currently running in GitHub Actions.

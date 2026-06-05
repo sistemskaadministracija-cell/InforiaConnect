@@ -84,9 +84,11 @@
 * Every repository change must be documented in `logging/revisions.txt`.
 * Record every confirmed build or packaging failure in
   `logging/BuildError_log.txt`.
-* Each build-error entry must include an ISO 8601 timestamp with timezone,
-  Actions run ID, error evidence, root cause, fix or attempted fix, relevant
-  commit, status, and validation result.
+* Keep each build-error entry concise and human-readable. Include only an ISO
+  8601 timestamp with timezone, a short error summary, what was attempted to
+  fix it, and the outcome.
+* Do not copy full GitHub Actions logs or lengthy diagnostic output into the
+  build-error log.
 * Update an open build-error entry when its GitHub Actions validation finishes.
   If a fix fails, preserve the attempted fix and add the repeated failure
   instead of rewriting history.

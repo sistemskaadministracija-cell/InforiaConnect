@@ -225,3 +225,33 @@ Validation:
   - Cross-checked fix timestamps and commit hashes with Git history.
   - Confirmed the new rules require updates before future commits and pushes.
   - The active baseline build remains run 27023798667.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T17:35:29+02:00
+Title: Simplify the build-error log
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Simplify build error log
+
+Changed files:
+  - AGENTS.md
+  - logging/BuildError_log.txt
+  - logging/revisions.txt
+
+Changes:
+  - Condensed each build-error entry to its timestamp, error summary, attempted
+    fix, and outcome.
+  - Removed run IDs, commit hashes, detailed root-cause sections, and lengthy
+    diagnostic descriptions from the dedicated error log.
+  - Updated the permanent agent rules to prohibit copying full Actions logs or
+    lengthy diagnostic output into `BuildError_log.txt`.
+
+Reasons:
+  - The dedicated file is intended as a quick human-readable troubleshooting
+    summary, while detailed repository changes remain in `revisions.txt`.
+  - GitHub Actions remains the source for complete raw build output.
+
+Validation:
+  - Confirmed every existing entry uses the requested concise format.
+  - Confirmed timestamps and outcomes were preserved.
+  - Confirmed no build or application code was changed.
