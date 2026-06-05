@@ -455,3 +455,53 @@ Validation:
     Flutter source.
   - Full build, extraction, and startup validation are delegated to GitHub
     Actions.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T21:03:03+02:00
+Title: Validate the real setup launch instead of a duplicate application
+Failed GitHub Actions run:
+  InforiaConnect Windows [baseline] - Fix branded runtime DLL loading
+  Run ID: 27032808662
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Validate setup installation window
+
+Changed files:
+  - .github/workflows/windows-build.yml
+  - logging/BuildError_log.txt
+  - logging/revisions.txt
+
+Failure:
+  - Portable launcher tests passed.
+  - Package parsing, extraction, and the package process itself succeeded.
+  - The smoke test then started `InforiaConnect.exe` a second time.
+  - That duplicate process returned exit code 1, so the workflow rejected the
+    build without testing the original child process launched by the package.
+
+Changes:
+  - Changed the smoke test to launch
+    `InforiaConnect-Windows-Setup.exe` without arguments, matching a user
+    double-click.
+  - Retained checks for package exit code and extracted
+    `InforiaConnect.exe`.
+  - Added an explicit check for extracted `libInforiaConnect.dll`.
+  - Polls for the first embedded `InforiaConnect` process started by the
+    package.
+  - Requires that process to create a real top-level window within 30 seconds.
+  - Reports the opened window title and then stops the process to clean up the
+    CI runner.
+
+Reasons:
+  - The package is responsible for launching the embedded application, so
+    starting another copy does not model user behavior.
+  - The user-visible requirement is that double-clicking Setup opens the
+    installation UI, not that a second process accepts a CLI command.
+  - Checking a nonzero window handle directly guards against another
+    build that extracts files but appears to do nothing.
+
+Validation:
+  - Confirmed the portable launcher forwards `--install` when a no-argument
+    executable name ends in `Setup.exe`.
+  - Confirmed the Flutter Windows runner allows `--install` and creates an
+    install-page window for that argument.
+  - Full UI startup validation is delegated to GitHub Actions.

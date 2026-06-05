@@ -101,4 +101,17 @@ Fix attempted:
   Updated the native Windows runner and Dart FFI loader to load the actual
   `libInforiaConnect.dll` filename.
 Outcome:
+  The DLL correction compiled, but the smoke test incorrectly launched a
+  second application instance and treated its rejection as a failure.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T21:03:03+02:00
+Error:
+  Runtime validation launched the extracted application twice, so the second
+  instance exited with code 1 and produced a false failure.
+Fix attempted:
+  Changed the smoke test to launch `Setup.exe` normally and require the first
+  embedded InforiaConnect process to open an installation window.
+Outcome:
   Validation will run in the next GitHub Actions build.

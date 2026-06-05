@@ -236,7 +236,8 @@ jobs:
             throw 'Portable launcher tests failed.'
           }
 
-          $process = Start-Process -FilePath $package -ArgumentList '--version' -PassThru
+          $startedAt = Get-Date
+          $process = Start-Process -FilePath $package -PassThru
           if (-not $process.WaitForExit(30000)) {
             Stop-Process -Id $process.Id -Force
             throw 'Packaged launcher did not exit within 30 seconds.'
@@ -250,16 +251,29 @@ jobs:
             throw "Packaged launcher did not extract $extractedApp."
           }
 
-          $appProcess = Start-Process -FilePath $extractedApp -ArgumentList '--version' -PassThru
-          if (-not $appProcess.WaitForExit(30000)) {
-            Stop-Process -Id $appProcess.Id -Force
-            throw 'Extracted InforiaConnect application did not exit within 30 seconds.'
-          }
-          if ($appProcess.ExitCode -ne 0) {
-            throw "Extracted InforiaConnect application exited with code $($appProcess.ExitCode)."
+          $brandedDll = Join-Path $extractDir 'libInforiaConnect.dll'
+          if (-not (Test-Path -LiteralPath $brandedDll -PathType Leaf)) {
+            throw "Packaged launcher did not extract $brandedDll."
           }
 
-          Write-Host "Packaged launcher extracted and started InforiaConnect successfully."
+          $deadline = (Get-Date).AddSeconds(30)
+          $appProcess = $null
+          while ((Get-Date) -lt $deadline) {
+            $appProcess = Get-Process -Name 'InforiaConnect' -ErrorAction SilentlyContinue |
+              Where-Object { $_.StartTime -ge $startedAt } |
+              Select-Object -First 1
+            if ($appProcess -and $appProcess.MainWindowHandle -ne 0) {
+              break
+            }
+            Start-Sleep -Seconds 1
+          }
+
+          if (-not $appProcess -or $appProcess.MainWindowHandle -eq 0) {
+            throw 'Packaged launcher did not open the InforiaConnect installation window.'
+          }
+
+          Write-Host "Opened window: $($appProcess.MainWindowTitle)"
+          Stop-Process -Id $appProcess.Id -Force
           
       - name: Upload installer
         uses: actions/upload-artifact@v4
