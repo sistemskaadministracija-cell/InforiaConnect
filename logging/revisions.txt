@@ -681,3 +681,49 @@ Validation:
   - No application source, build configuration, or runtime behavior changed.
   - A GitHub Actions compilation is unnecessary for this documentation-only
     change.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T00:24:45+02:00
+Title: Expand the Slovenian InforiaConnect technical documentation
+
+Changed files:
+  - logging/InforiaConnect_Tehnicni_Pregled.docx
+  - logging/revisions.txt
+
+Changes:
+  - Preserved the existing Word cover, topology diagram, heading hierarchy,
+    bullet formatting, and original logging table.
+  - Corrected the protocol description to distinguish TCP/UDP 21116
+    registration and NAT traversal from TCP 21117 relay traffic.
+  - Replaced overly broad logging claims with the behavior verified from hbbs
+    and hbbr Docker logs.
+  - Corrected the logging table for timestamps, ID-pair visibility, P2P versus
+    relay visibility, traffic totals, encrypted session contents, device
+    metadata, and transferred-file information.
+  - Added Slovenian sections covering the Flutter/Rust architecture, GitHub
+    Actions build pipeline, branded installer, Linux VM and Docker deployment,
+    network port matrix, LAN hairpin issue and split DNS, operational
+    monitoring, key backup and security, troubleshooting, and verified
+    production status.
+  - Documented the confirmed server addresses, persistent Docker mount,
+    restart policy, host networking, successful external relay test, and
+    currently recommended LAN DNS resolution.
+
+Reasons:
+  - Convert the initial overview into current technical and operational
+    documentation for the InforiaConnect client and server environment.
+  - Ensure the document reflects observed open-source server capabilities
+    instead of assuming Pro-level audit information.
+
+Validation:
+  - Reopened the document successfully through Microsoft Word automation.
+  - Confirmed 8 pages, 13 numbered sections, 3 tables, and the original
+    topology image.
+  - Confirmed the new architecture, build, server, ports, split DNS,
+    monitoring, security, diagnostics, and production-state sections exist.
+  - Confirmed the literal server public key was removed from the overview and
+    replaced by a description of its role.
+  - Confirmed the DOCX ZIP signature and structural readability.
+  - No application source or runtime configuration changed, so a Windows
+    compilation is unnecessary.
