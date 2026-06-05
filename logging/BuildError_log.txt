@@ -61,4 +61,16 @@ Fix attempted:
   Changed `build.py` to look in the root Cargo workspace `target/release`
   directory instead of `libs/portable/target/release`.
 Outcome:
-  Validation is currently running in GitHub Actions.
+  Fixed. The following build found the packer and created the final installer
+  file.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T18:17:31+02:00
+Error:
+  The installer was created, but `build.py` crashed while printing a sparkle
+  character that the Windows CP1252 console could not encode.
+Fix attempted:
+  Replaced the Unicode sparkle with a plain ASCII success message.
+Outcome:
+  Validation will run in the next GitHub Actions build.

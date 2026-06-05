@@ -255,3 +255,46 @@ Validation:
   - Confirmed every existing entry uses the requested concise format.
   - Confirmed timestamps and outcomes were preserved.
   - Confirmed no build or application code was changed.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T18:17:31+02:00
+Title: Make the packaging success message Windows-console safe
+Failed GitHub Actions run:
+  InforiaConnect Windows [baseline] - Simplify build error log
+  Run ID: 27024383876
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Fix packaging console encoding
+
+Changed files:
+  - build.py
+  - logging/BuildError_log.txt
+  - logging/revisions.txt
+
+Failure:
+  - The Rust core, Flutter application, portable payload, and portable packer
+    compiled successfully.
+  - `data.bin` and app metadata were generated successfully.
+  - `build.py` moved the packer to the final
+    `InforiaConnect-<version>-install.exe` filename.
+  - The script then raised UnicodeEncodeError because the Windows CP1252
+    console could not encode the sparkle character in its success message.
+  - The nonzero exit prevented the artifact preparation and upload steps.
+
+Changes:
+  - Replaced the Unicode sparkle with a plain ASCII success message.
+  - Marked the preceding portable-packer path error as fixed in the concise
+    build-error log.
+  - Added a concise entry for this console-encoding failure and attempted fix.
+
+Reasons:
+  - Status output must not make an otherwise successful package build fail.
+  - ASCII output is portable across the GitHub Windows runner's console
+    encodings.
+
+Validation:
+  - Confirmed the failing line was executed after the final installer rename.
+  - Confirmed no other sparkle character remains in `build.py`.
+  - Confirmed the workflow artifact step expects the generated
+    `InforiaConnect-*-install.exe` pattern.
+  - Full artifact preparation and upload are delegated to GitHub Actions.

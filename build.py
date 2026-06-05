@@ -483,7 +483,7 @@ def build_flutter_windows(version, features, skip_portable_pack):
             os.remove(final_installer_name)
         os.rename('./InforiaConnect_portable.exe', final_installer_name)
         
-    print(f'✨ Success! Output location: {os.path.abspath(os.curdir)}/{final_installer_name}')
+    print(f'Success! Output location: {os.path.abspath(os.curdir)}/{final_installer_name}')
 
 
 def main():
