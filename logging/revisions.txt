@@ -98,3 +98,48 @@ Validation:
     profile selection.
   - Confirmed profile-specific artifact and cache names prevent ambiguity.
   - Full compilation and installer generation are delegated to GitHub Actions.
+
+-------------------------------------------------------------------------------
+
+Date: 2026-06-05
+Title: Align baseline vcpkg installation with native build scripts
+Failed GitHub Actions run:
+  InforiaConnect Windows [baseline] - Add baseline and accelerated CI profiles
+  Run ID: 27019690424
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Fix baseline vcpkg dependency path
+
+Changed files:
+  - .github/workflows/windows-build.yml
+  - logging/revisions.txt
+
+Failure:
+  - The baseline dependency installation completed successfully.
+  - The Rust build then failed in the magnum-opus build script because
+    `opus/opus_multistream.h` could not be found.
+  - The build script searched under
+    `C:\vcpkg\installed\x64-windows-static\include`.
+  - The workflow had installed packages under the workspace-specific
+    `vcpkg_installed` directory instead.
+
+Changes:
+  - Removed the baseline `--x-install-root` override so vcpkg installs the
+    software codec packages under `C:\vcpkg\installed`.
+  - Removed `VCPKG_INSTALLED_ROOT` from the baseline build environment.
+  - Retained `VCPKG_ROOT=C:\vcpkg`, which is the location expected by both
+    magnum-opus and scrap native build scripts.
+
+Reasons:
+  - magnum-opus does not honor the workflow's workspace installation override
+    in this dependency version and derives its include path from VCPKG_ROOT.
+  - Using vcpkg's standard installed directory gives all native build scripts
+    one consistent source for Opus, libvpx, AOM, and libyuv.
+  - No package or application feature change is required; this is only a path
+    consistency correction.
+
+Validation:
+  - Confirmed the failed log resolved Opus from
+    `C:\vcpkg\installed\x64-windows-static`.
+  - Confirmed the revised install and build steps both use `C:\vcpkg`.
+  - Confirmed baseline still excludes FFmpeg, hwcodec, and vram.
+  - Full compilation and installer generation are delegated to GitHub Actions.

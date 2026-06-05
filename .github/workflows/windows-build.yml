@@ -149,8 +149,7 @@ jobs:
             libvpx:x64-windows-static `
             libyuv:x64-windows-static `
             opus:x64-windows-static `
-            --classic `
-            --x-install-root="${{ github.workspace }}\vcpkg_installed"
+            --classic
 
       - name: Install accelerated codec dependencies
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.build_profile == 'accelerated' }}
@@ -187,7 +186,6 @@ jobs:
         shell: bash
         env:
           VCPKG_ROOT: 'C:\vcpkg'
-          VCPKG_INSTALLED_ROOT: '${{ github.workspace }}/vcpkg_installed'
         run: |
           python3 build.py --portable --flutter 2>&1
 
