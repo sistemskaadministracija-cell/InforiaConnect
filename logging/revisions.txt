@@ -652,3 +652,32 @@ Validation:
   - Confirmed the user-visible upstream branding scan is clean.
   - Windows compilation and runtime installer validation remain delegated to
     GitHub Actions.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T00:14:55+02:00
+Title: Add Linux server connection-monitoring command reference
+
+Changed files:
+  - logging/LatestConnection_commands.txt
+  - logging/revisions.txt
+
+Changes:
+  - Added a structured, read-only command reference for monitoring hbbs client
+    registrations and hbbr relay sessions.
+  - Included commands for live monitoring, recent history, client-ID and IP
+    searches, current connections, registration counts, listening ports, and
+    Docker log-retention inspection.
+  - Added notes explaining the difference between hbbs registration activity,
+    hbbr relay sessions, and direct peer-to-peer connections.
+
+Reasons:
+  - Provide a reusable operational reference for checking the latest
+    InforiaConnect server connections without modifying the Linux VM.
+
+Validation:
+  - Confirmed the file contains read-only Docker, grep, sed, sort, and ss
+    commands.
+  - No application source, build configuration, or runtime behavior changed.
+  - A GitHub Actions compilation is unnecessary for this documentation-only
+    change.

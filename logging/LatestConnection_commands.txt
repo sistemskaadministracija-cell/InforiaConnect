@@ -1,0 +1,131 @@
+InforiaConnect Server - Latest Connection Commands
+===================================================
+
+All commands below are read-only.
+
+
+1. Watch Activity Live
+----------------------
+
+Watch client registrations:
+
+sudo docker logs -f --timestamps hbbs
+
+Watch relay connections:
+
+sudo docker logs -f --timestamps hbbr
+
+Press Ctrl+C to stop watching.
+
+
+2. Show Recent Activity
+-----------------------
+
+Show activity from the last hour:
+
+sudo docker logs --since 1h --timestamps hbbs
+sudo docker logs --since 1h --timestamps hbbr
+
+Show activity from the last 24 hours:
+
+sudo docker logs --since 24h --timestamps hbbs
+sudo docker logs --since 24h --timestamps hbbr
+
+
+3. Show Latest Registrations
+----------------------------
+
+Show the last 100 registration events:
+
+sudo docker logs --timestamps --tail 1000 hbbs 2>&1 | \
+grep -E 'update_pk|new peer|pk updated' | \
+tail -100
+
+Show the latest client IDs and public IP addresses:
+
+sudo docker logs --since 24h --timestamps hbbs 2>&1 | \
+grep 'update_pk' | \
+sed -E 's/^([^ ]+).*update_pk ([0-9]+) \[::ffff:([^]]+)\]:([0-9]+).*/time=\1 id=\2 ip=\3 source_port=\4/' | \
+tail -50
+
+
+4. Show Latest Relay Sessions
+-----------------------------
+
+Show the last 100 relay events:
+
+sudo docker logs --timestamps --tail 1000 hbbr 2>&1 | \
+grep -E 'New relay request|got paired|Both are|Relay of' | \
+tail -100
+
+Show relay activity from the last 24 hours:
+
+sudo docker logs --since 24h --timestamps hbbr 2>&1 | \
+grep -E 'New relay request|got paired|Both are|Relay of'
+
+
+5. Search for a Client
+----------------------
+
+Replace 248136051 with the required InforiaConnect client ID:
+
+sudo docker logs --timestamps hbbs 2>&1 | \
+grep '248136051'
+
+
+6. Search for an IP Address
+---------------------------
+
+Replace 89.212.162.181 with the required public or private IP address:
+
+for container in hbbs hbbr; do
+  sudo docker logs --timestamps "$container" 2>&1 | \
+  grep '89\.212\.162\.181'
+done
+
+
+7. Show Current Connections
+---------------------------
+
+Show currently established TCP connections on InforiaConnect server ports:
+
+sudo ss -ntp | \
+grep -E ':(21115|21116|21117|21118|21119)\b'
+
+Show all listening InforiaConnect server ports:
+
+sudo ss -lntup | \
+grep -E ':(21115|21116|21117|21118|21119)\b'
+
+
+8. Count Registrations by IP
+----------------------------
+
+Count registrations by IP address during the last 24 hours:
+
+sudo docker logs --since 24h hbbs 2>&1 | \
+grep 'update_pk' | \
+sed -n 's/.*\[::ffff:\([^]]*\)\]:.*/\1/p' | \
+sort | uniq -c | sort -nr
+
+
+9. Check Docker Log Retention
+-----------------------------
+
+Show the Docker log driver and configured rotation options:
+
+sudo docker inspect hbbs hbbr \
+  --format '{{.Name}} driver={{.HostConfig.LogConfig.Type}} options={{json .HostConfig.LogConfig.Config}}'
+
+
+Notes
+-----
+
+- hbbs logs client registration and rendezvous activity.
+- hbbr logs sessions that use the relay server.
+- Direct peer-to-peer sessions may not create a complete session record in
+  hbbr.
+- Docker logs may eventually rotate, depending on the configured logging
+  policy.
+- Client IDs, IP addresses, UUIDs, and public keys should be treated as
+  sensitive operational information.
