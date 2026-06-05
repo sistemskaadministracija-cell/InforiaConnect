@@ -1,0 +1,47 @@
+InforiaConnect Revision Log
+===========================
+
+Date: 2026-06-05
+Title: Stabilize Rust dependency resolution and identify CI builds
+Intended GitHub Actions run name:
+  Stabilize Rust dependencies and name Windows CI builds
+
+Changed files:
+  - .github/workflows/windows-build.yml
+  - Cargo.lock
+  - AGENTS.md
+  - logging/revisions.txt
+
+Changes:
+  - Changed the active Windows workflow Rust toolchain from version 1.75 to
+    stable for both bridge generation and Windows compilation.
+  - Added a required build_name input for manually dispatched workflow runs.
+  - Added a workflow-level run-name so builds are identifiable in the GitHub
+    Actions tab. Push-triggered builds use the descriptive commit message.
+  - Generated Cargo.lock to pin registry versions and Git dependency commits.
+  - Added repository operating rules covering GitHub-only authoritative builds,
+    independent diagnosis, installer and server-configuration requirements,
+    revision logging, validation, commit ordering, and pushing to GitHub.
+
+Reasons:
+  - Cargo 1.75 cannot parse dependencies that use Rust Edition 2024.
+  - Cargo 1.81 also fails on the resolved time 0.3.47 manifest because Edition
+    2024 support was not stable in that Cargo release.
+  - Using the stable CI toolchain allows the current dependency graph to be
+    parsed, while Cargo.lock prevents future builds from silently resolving a
+    different graph.
+  - Named runs make each compilation attempt and tested hypothesis visible in
+    GitHub Actions.
+  - A permanent repository-local process is needed so every future change is
+    documented before it is committed and pushed.
+
+Validation:
+  - Confirmed no Rust 1.75 override remains in the active Windows workflow or
+    root Cargo.toml.
+  - Generated Cargo.lock successfully.
+  - Confirmed tray-icon is locked to registry version 0.21.3.
+  - Confirmed stable Cargo 1.96.0 parses the locked metadata.
+  - Confirmed stable Cargo fetched and parsed the complete locked Windows
+    dependency set.
+  - A full Windows Flutter/vcpkg installer build is intentionally delegated to
+    GitHub Actions, the authoritative compilation environment.

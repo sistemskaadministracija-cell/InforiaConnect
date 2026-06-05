@@ -60,3 +60,48 @@
 * Do not refactor unrelated code.
 * Do not make formatting-only changes.
 * Keep naming/style consistent with nearby code.
+
+## Project Delivery Rules
+
+* GitHub Actions is the authoritative build and compilation environment.
+* Do not rely on local compilation as proof that a Windows installer works.
+* Local checks should be limited to inspection, formatting, metadata, and other
+  lightweight validation unless the user explicitly requests a local build.
+* The target artifact is a production-ready Windows `setup.exe` for the custom
+  InforiaConnect RustDesk client.
+* The installed client must retain the configured InforiaConnect relay server,
+  ID server, and public key settings.
+* Diagnose build and installer failures independently from previous AI notes.
+  Treat handoff prompts as context, verify their claims against the repository,
+  dependency graph, workflow logs, and generated artifacts.
+* Review the complete relevant execution path when diagnosing failures,
+  including GitHub Actions, `build.py`, Cargo, Flutter, vcpkg, packaging,
+  installer generation, and runtime server configuration.
+* Prefer reproducible, pinned dependencies and deterministic CI behavior.
+
+## Revision Logging And Git
+
+* Every repository change must be documented in `logging/revisions.txt`.
+* Add the revision entry after the implementation is complete and before any
+  commit or push.
+* Each entry must include the date, a concise title, changed files, what
+  changed, why it changed, and validation performed.
+* Keep the log readable, chronological, and suitable for technical auditing.
+* Never commit or push implementation changes without the matching revision
+  entry.
+* Push completed changes to the configured GitHub remote after validation and
+  revision logging.
+* Do not claim a push succeeded until the remote operation has completed.
+* Do not overwrite or rewrite unrelated user changes while preparing a commit.
+
+## GitHub Actions Runs
+
+* Manually triggered workflows must accept a descriptive build name.
+* Set the workflow-level `run-name` so the GitHub Actions tab clearly shows
+  what change or hypothesis is being compiled.
+* Use a concise, specific name such as
+  `Fix FFmpeg linkage - Windows portable installer`.
+* Record the intended Actions run name in `logging/revisions.txt` when a change
+  is expected to trigger a build.
+* Inspect the resulting GitHub Actions logs and artifacts before deciding the
+  next fix. Do not make speculative chains of unrelated changes.
