@@ -157,16 +157,16 @@ jobs:
         shell: bash
         env:
           VCPKG_ROOT: 'C:\vpkg'
-          FFMPEG_DIR: '${{ github.workspace }}/vcpkg_installed/x64-windows-static'
+          FFMPEG_DIR: '${{ github.workspace }}/vpkg_installed/x64-windows-static'
           RUSTFLAGS: >-
-            -L native=${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib 
-            -C link-arg=/LIBPATH:${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib 
+            -L native=${{ github.workspace }}/vpkg_installed/x64-windows-static/lib 
+            -C link-arg=/LIBPATH:${{ github.workspace }}/vpkg_installed/x64-windows-static/lib 
             -C link-arg=swresample.lib 
             -C link-arg=strmiids.lib 
             -C link-arg=mfplat.lib 
             -C link-arg=mfuuid.lib
             -C link-arg=/FORCE:MULTIPLE
-          BINDGEN_EXTRA_CLANG_ARGS: "-I${{ github.workspace }}/vcpkg_installed/x64-windows-static/include"
+          BINDGEN_EXTRA_CLANG_ARGS: "-I${{ github.workspace }}/vpkg_installed/x64-windows-static/include"
         run: |
           # 1. Clean out any corrupted or pre-existing folders/links safely
           powershell -Command "if (Test-Path 'C:\vpkg\installed') { Remove-Item -Recurse -Force 'C:\vpkg\installed' }"
@@ -174,15 +174,12 @@ jobs:
           # 2. Re-create the parent directory structure
           powershell -Command "New-Item -ItemType Directory -Force -Path 'C:\vpkg\installed'"
           
-          # 3. Ensure the workspace vpkg_installed directory target actually exists so the junction doesn't crash
+          # 3. Ensure the workspace target folder exists, then link it
           powershell -Command "if (!(Test-Path '${{ github.workspace }}\vpkg_installed\x64-windows-static')) { New-Item -ItemType Directory -Force -Path '${{ github.workspace }}\vpkg_installed\x64-windows-static' }"
-          
-          # 4. Create the Junction Link pointing seamlessly to the workspace directory
           powershell -Command "New-Item -ItemType Junction -Path 'C:\vpkg\installed\x64-windows-static' -Value '${{ github.workspace }}\vpkg_installed\x64-windows-static'"
           
-          # 5. Kick off the compilation pipeline
+          # 4. Kick off the compilation pipeline with the correct compiler version
           python3 build.py --portable --hwcodec --flutter --vram 2>&1
-          echo "Build script completed with exit code: $?"
 
       - name: Prepare Installer Artifact
         shell: bash

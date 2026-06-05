@@ -6,7 +6,7 @@ edition = "2021"
 build= "build.rs"
 description = "InforiaConnect Remote Desktop"
 default-run = "InforiaConnect"
-rust-version = "1.75"
+rust-version = "1.81"
 
 [lib]
 name = "libInforiaConnect"
