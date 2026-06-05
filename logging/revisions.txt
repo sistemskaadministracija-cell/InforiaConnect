@@ -45,3 +45,56 @@ Validation:
     dependency set.
   - A full Windows Flutter/vcpkg installer build is intentionally delegated to
     GitHub Actions, the authoritative compilation environment.
+
+-------------------------------------------------------------------------------
+
+Date: 2026-06-05
+Title: Split Windows builds into baseline and accelerated profiles
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Add baseline and accelerated CI profiles
+
+Changed files:
+  - .github/workflows/windows-build.yml
+  - AGENTS.md
+  - logging/revisions.txt
+
+Changes:
+  - Added a required build_profile choice to manual workflow runs with
+    `baseline` and `accelerated` options.
+  - Made `baseline` the automatic profile for every push to master or main.
+  - Added the selected build profile to the GitHub Actions run name and
+    uploaded artifact name.
+  - Split native dependency installation by profile.
+  - Baseline installs only the software codec dependencies required by the
+    RustDesk core: aom, libjpeg-turbo, libvpx, libyuv, and opus.
+  - Baseline forces vcpkg classic mode so the explicit package list is used
+    instead of the repository manifest that includes FFmpeg.
+  - Baseline builds with `python3 build.py --portable --flutter`.
+  - Accelerated builds retain the full vcpkg manifest, FFmpeg preparation,
+    `--hwcodec`, and `--vram` behavior.
+  - Isolated Rust caches by build profile.
+  - Documented baseline as the release-validation path and accelerated as an
+    independently maintained performance variant.
+
+Reasons:
+  - Branding, custom ID/relay server configuration, the public key, remote
+    control, and installation do not require hardware codecs or VRAM.
+  - Software VP8, VP9, and AV1 support still requires its smaller native codec
+    dependency set.
+  - The full FFmpeg installation added approximately 51 minutes to the latest
+    workflow and the accelerated linker path caused the current
+    `swresample.lib` failure.
+  - A reliable installer must be deliverable without being blocked by optional
+    GPU performance features.
+  - Keeping acceleration as a separate selectable profile preserves a clear
+    path to optimize multi-monitor 1080p and 1440p sessions later.
+
+Validation:
+  - Confirmed the baseline path does not enable the `hwcodec` or `vram` Cargo
+    features.
+  - Confirmed the accelerated path retains the existing FFmpeg and VRAM setup.
+  - Confirmed push events resolve to the baseline profile.
+  - Confirmed manual runs require both a descriptive build name and an explicit
+    profile selection.
+  - Confirmed profile-specific artifact and cache names prevent ambiguity.
+  - Full compilation and installer generation are delegated to GitHub Actions.

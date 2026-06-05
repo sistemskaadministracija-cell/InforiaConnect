@@ -99,6 +99,10 @@
 * Manually triggered workflows must accept a descriptive build name.
 * Set the workflow-level `run-name` so the GitHub Actions tab clearly shows
   what change or hypothesis is being compiled.
+* Keep the Windows build split into two profiles:
+  * `baseline` is the default push and release-validation path;
+  * `accelerated` is manually selected for FFmpeg hardware codecs and VRAM.
+* A failing accelerated build must not block baseline installer delivery.
 * Use a concise, specific name such as
   `Fix FFmpeg linkage - Windows portable installer`.
 * Record the intended Actions run name in `logging/revisions.txt` when a change
