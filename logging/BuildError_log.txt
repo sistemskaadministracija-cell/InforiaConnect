@@ -87,4 +87,18 @@ Fix attempted:
   Changed the reader to use the complete `InforiaConnect` marker, made
   `Setup.exe` names open installation mode, and added runtime smoke tests.
 Outcome:
+  The marker and setup-name fixes passed. Runtime validation then exposed a
+  separate stale DLL name in the extracted application.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T20:26:26+02:00
+Error:
+  The package extracted correctly, but the embedded application exited with
+  code 1 because its Windows loaders requested `librustdesk.dll` while the
+  custom build contains `libInforiaConnect.dll`.
+Fix attempted:
+  Updated the native Windows runner and Dart FFI loader to load the actual
+  `libInforiaConnect.dll` filename.
+Outcome:
   Validation will run in the next GitHub Actions build.

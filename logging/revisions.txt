@@ -406,3 +406,52 @@ Validation:
     `InforiaConnect-Windows-Setup.exe`.
   - Full Windows compilation and runtime smoke validation are delegated to
     GitHub Actions.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T20:26:26+02:00
+Title: Align Windows runtime DLL loading with the branded Rust library
+Failed GitHub Actions run:
+  InforiaConnect Windows [baseline] - Fix silent portable launcher crash
+  Run ID: 27031154852
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Fix branded runtime DLL loading
+
+Changed files:
+  - flutter/lib/models/native_model.dart
+  - flutter/windows/runner/main.cpp
+  - logging/BuildError_log.txt
+  - logging/revisions.txt
+
+Failure:
+  - The portable launcher's installer-name unit test passed.
+  - The packaged executable returned exit code 0 and extracted
+    `InforiaConnect.exe`, proving the package marker fix worked.
+  - Starting the extracted application returned exit code 1.
+  - The Windows runner still called `LoadLibraryA("librustdesk.dll")`.
+  - Cargo names the custom Rust library `libInforiaConnect`, CMake packages
+    `libInforiaConnect.dll`, and the extracted payload contains that filename.
+  - The Dart native library loader also retained `librustdesk.dll`.
+
+Changes:
+  - Updated the native Windows runner to load `libInforiaConnect.dll`.
+  - Updated its diagnostic message to report the branded DLL filename.
+  - Updated the Dart Windows FFI loader to open `libInforiaConnect.dll`.
+  - Preserved the runtime smoke gate that starts the extracted application and
+    rejects nonzero exit codes.
+
+Reasons:
+  - The executable cannot initialize the Rust core when it requests a DLL that
+    is not present in its distribution directory.
+  - Both native and Dart loaders must match the library name produced by Cargo
+    and installed by CMake.
+
+Validation:
+  - Confirmed Cargo library name is `libInforiaConnect`.
+  - Confirmed Windows CMake packaging installs `libInforiaConnect.dll`.
+  - Confirmed the previous artifact payload contained
+    `libInforiaConnect.dll`, not `librustdesk.dll`.
+  - Confirmed no Windows runtime reference to `librustdesk.dll` remains in the
+    Flutter source.
+  - Full build, extraction, and startup validation are delegated to GitHub
+    Actions.
