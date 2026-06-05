@@ -165,6 +165,7 @@ jobs:
             -C link-arg=strmiids.lib 
             -C link-arg=mfplat.lib 
             -C link-arg=mfuuid.lib
+            -C link-arg=/FORCE:MULTIPLE
           BINDGEN_EXTRA_CLANG_ARGS: "-I${{ github.workspace }}/vcpkg_installed/x64-windows-static/include"
         run: |
           # 1. Clean out any corrupted or pre-existing folders/links safely using the correct spelling
