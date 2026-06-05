@@ -212,8 +212,9 @@ exclude = ["vdi/host", "examples/custom_plugin"]
 [patch.crates-io]
 libxdo-sys = { path = "libs/libxdo-sys-stub" }
 
-# Override the broken git dependency parsing by locking tray-icon directly to the registry version
-tray-icon = { git = "https://github.com/tauri-apps/tray-icon", rev = "06b72a0dbdb9079a0b12b5fb4e815049cf10469b" }
+# Tell Cargo that whenever an upstream package asks for this Git repo, use the official crates.io version instead
+[patch."https://github.com/tauri-apps/tray-icon"]
+tray-icon = { version = "0.21.3" }
 
 [package.metadata.winres]
 LegalCopyright = "Copyright © 2025 Purslane Ltd. All rights reserved."
