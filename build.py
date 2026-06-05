@@ -459,9 +459,9 @@ def build_flutter_windows(version, features, skip_portable_pack):
     # 2. MISSING STEP ADDED: Compile the actual packer engine binary right here
     system2('cargo build --release')
     
-    # Define our source and target paths clearly relative to libs/portable
-    packer_src_1 = './target/release/rustdesk-portable-packer.exe'
-    packer_src_2 = './target/release/InforiaConnect-portable-packer.exe'
+    # libs/portable is a workspace member, so Cargo writes into the root target directory.
+    packer_src_1 = '../../target/release/rustdesk-portable-packer.exe'
+    packer_src_2 = '../../target/release/InforiaConnect-portable-packer.exe'
     portable_dest = '../../InforiaConnect_portable.exe'
     
     # 3. Move the compiled, data-stitched binary out to the root directory safely
@@ -470,7 +470,7 @@ def build_flutter_windows(version, features, skip_portable_pack):
     elif os.path.exists(packer_src_2):
         shutil.move(packer_src_2, portable_dest)
     else:
-        print("Error: Could not find the compiled portable packer binary inside target/release!")
+        print("Error: Could not find the compiled portable packer binary inside the workspace target/release!")
         exit(-1)
         
     # Jump back out to the main project root directory

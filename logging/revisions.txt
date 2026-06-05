@@ -143,3 +143,46 @@ Validation:
   - Confirmed the revised install and build steps both use `C:\vcpkg`.
   - Confirmed baseline still excludes FFmpeg, hwcodec, and vram.
   - Full compilation and installer generation are delegated to GitHub Actions.
+
+-------------------------------------------------------------------------------
+
+Date: 2026-06-05
+Title: Resolve the portable packer from the Cargo workspace target
+Failed GitHub Actions run:
+  InforiaConnect Windows [baseline] - Fix baseline vcpkg dependency path
+  Run ID: 27021453379
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Fix portable packer workspace path
+
+Changed files:
+  - build.py
+  - logging/revisions.txt
+
+Failure:
+  - The baseline native dependencies, Rust core, Flutter application, and
+    portable payload generation completed successfully.
+  - `libs/portable/generate.py` generated `data.bin` and Cargo compiled
+    `InforiaConnect-portable-packer` successfully.
+  - Packaging then failed because `build.py` searched for the executable under
+    `libs/portable/target/release`.
+
+Changes:
+  - Updated both supported portable packer source paths to resolve from the
+    repository workspace target directory at `../../target/release`.
+  - Clarified the missing-binary error message to identify the workspace target
+    directory.
+
+Reasons:
+  - `libs/portable` is a member of the root Cargo workspace.
+  - Cargo therefore places its release executable in the root
+    `target/release` directory, not a crate-local `libs/portable/target`.
+  - The packer existed after compilation, but the previous lookup path could
+    never find it.
+
+Validation:
+  - Confirmed `libs/portable` is listed in the root Cargo workspace members.
+  - Confirmed the portable package binary name is
+    `InforiaConnect-portable-packer`.
+  - Confirmed the corrected relative path resolves from `libs/portable` to the
+    root workspace `target/release` directory.
+  - Full packaging and installer generation are delegated to GitHub Actions.
