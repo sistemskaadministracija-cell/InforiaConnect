@@ -73,4 +73,5 @@ Error:
 Fix attempted:
   Replaced the Unicode sparkle with a plain ASCII success message.
 Outcome:
-  Validation will run in the next GitHub Actions build.
+  Fixed. GitHub Actions completed successfully and uploaded the Windows
+  executable artifact.

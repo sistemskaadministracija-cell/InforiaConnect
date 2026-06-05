@@ -298,3 +298,43 @@ Validation:
   - Confirmed the workflow artifact step expects the generated
     `InforiaConnect-*-install.exe` pattern.
   - Full artifact preparation and upload are delegated to GitHub Actions.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T19:00:45+02:00
+Title: Verify the successful baseline Windows artifact
+Successful GitHub Actions run:
+  InforiaConnect Windows [baseline] - Fix packaging console encoding
+  Run ID: 27026509631
+  Commit: 47f508b938f6914346cb2e85a5d7d608af38ce79
+
+Changed files:
+  - logging/BuildError_log.txt
+  - logging/revisions.txt
+
+Changes:
+  - Marked the Windows console-encoding failure as fixed.
+  - Recorded the successful build and downloaded-artifact verification.
+
+Reasons:
+  - The final outcome must be preserved after GitHub performs the authoritative
+    build and artifact upload.
+
+Validation:
+  - GitHub Actions completed both `generate-bridge` and `build-windows`
+    successfully.
+  - The baseline build, artifact preparation, and artifact upload steps all
+    completed successfully.
+  - Artifact name: `InforiaConnect-Windows-baseline-Setup`.
+  - Artifact ID: 7442142048.
+  - Artifact archive size: 21,829,483 bytes.
+  - Artifact archive SHA-256:
+    `249f7884fa55ce5b85ad1242e1373f863ee2ec54da31d32ebf02c50873398ded`.
+  - Downloaded executable: `InforiaConnect-Windows-Setup.exe`.
+  - Executable size: 22,175,232 bytes.
+  - Executable SHA-256:
+    `273A2439FB2E9C0A06B789D25022C8B327A8253819B2C2D3C34674799204EEC8`.
+  - Confirmed the executable begins with the Windows PE `MZ` header.
+  - Confirmed product metadata identifies InforiaConnect version 1.4.6.
+  - The current output is RustDesk's portable packed executable renamed to
+    `Setup.exe`; a traditional installation wizard was not built or executed.
