@@ -338,3 +338,71 @@ Validation:
   - Confirmed product metadata identifies InforiaConnect version 1.4.6.
   - The current output is RustDesk's portable packed executable renamed to
     `Setup.exe`; a traditional installation wizard was not built or executed.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T19:48:29+02:00
+Title: Fix the portable package marker and add runtime validation
+Failed runtime artifact:
+  GitHub Actions run ID: 27026509631
+  Artifact ID: 7442142048
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Fix silent portable launcher crash
+
+Changed files:
+  - .github/workflows/windows-build.yml
+  - libs/portable/src/bin_reader.rs
+  - libs/portable/src/main.rs
+  - logging/BuildError_log.txt
+  - logging/revisions.txt
+
+Failure:
+  - The GitHub workflow compiled and uploaded
+    `InforiaConnect-Windows-Setup.exe` successfully.
+  - Double-clicking the executable displayed nothing.
+  - Local reproduction with `--version` exited immediately with Windows status
+    `0xC0000409` and did not extract `InforiaConnect.exe`.
+  - The package generator wrote `InforiaConnect` as its start and end marker.
+  - The Rust package reader retained the original RustDesk marker length of
+    eight bytes, so its first marker comparison always failed and panicked.
+  - The Windows GUI subsystem hid the panic message from the user.
+
+Changes:
+  - Replaced the hard-coded eight-byte marker length with the complete
+    `InforiaConnect` byte marker.
+  - Updated both start-marker and end-marker parsing to use the marker's actual
+    length.
+  - Made the portable launcher recognize both `install.exe` and `setup.exe`
+    filename suffixes as installation mode.
+  - Added focused tests for installer filename detection.
+  - Added a GitHub Actions smoke test after artifact preparation.
+  - The smoke-test gate runs the portable launcher's focused Rust tests.
+  - The smoke test launches the package with `--version`, requires a successful
+    exit within 30 seconds, and verifies that the embedded
+    `InforiaConnect.exe` was extracted under LocalAppData.
+  - The smoke test also launches the extracted application with `--version`
+    and requires a successful exit.
+  - Artifact upload now occurs only after this runtime smoke test passes.
+
+Reasons:
+  - Compilation alone cannot prove that the self-extracting launcher can parse
+    its embedded payload.
+  - Using the marker value's length prevents branding changes from leaving a
+    stale RustDesk-specific length in the parser.
+  - Runtime validation prevents another silently crashing executable from
+    being published as a successful artifact.
+  - The uploaded artifact is named `Setup.exe`, so installation-mode detection
+    must support that suffix rather than only `install.exe`.
+
+Validation:
+  - Confirmed the downloaded artifact reproduces the immediate exit and no
+    extraction.
+  - Confirmed the generator writes the 14-byte `InforiaConnect` marker.
+  - Confirmed the previous reader consumed only eight bytes before comparing
+    against `InforiaConnect`.
+  - Confirmed `--version` is a non-installing application command suitable for
+    the package smoke test.
+  - Confirmed the workflow publishes the package as
+    `InforiaConnect-Windows-Setup.exe`.
+  - Full Windows compilation and runtime smoke validation are delegated to
+    GitHub Actions.

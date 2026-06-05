@@ -10,7 +10,7 @@ const BIN_DATA: &[u8] = include_bytes!("../data.bin");
 const BIN_DATA: &[u8] = &[];
 // 4bytes
 const LENGTH: usize = 4;
-const IDENTIFIER_LENGTH: usize = 8;
+const IDENTIFIER: &[u8] = b"InforiaConnect";
 const MD5_LENGTH: usize = 32;
 const BUF_SIZE: usize = 4096;
 
@@ -71,16 +71,14 @@ impl BinaryReader {
     fn read() -> (Vec<BinaryData>, String) {
         let mut base: usize = 0;
         let mut parsed = vec![];
-        assert!(BIN_DATA.len() > IDENTIFIER_LENGTH, "bin data invalid!");
-        let mut iden = String::from_utf8_lossy(&BIN_DATA[base..base + IDENTIFIER_LENGTH]);
-        if iden != "InforiaConnect" {
+        assert!(BIN_DATA.len() > IDENTIFIER.len(), "bin data invalid!");
+        if &BIN_DATA[base..base + IDENTIFIER.len()] != IDENTIFIER {
             panic!("bin file is not valid!");
         }
-        base += IDENTIFIER_LENGTH;
+        base += IDENTIFIER.len();
         loop {
-            iden = String::from_utf8_lossy(&BIN_DATA[base..base + IDENTIFIER_LENGTH]);
-            if iden == "InforiaConnect" {
-                base += IDENTIFIER_LENGTH;
+            if &BIN_DATA[base..base + IDENTIFIER.len()] == IDENTIFIER {
+                base += IDENTIFIER.len();
                 break;
             }
             // start reading
@@ -137,4 +135,3 @@ impl BinaryReader {
         }
     }
 }
-

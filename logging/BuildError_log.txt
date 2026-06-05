@@ -75,3 +75,16 @@ Fix attempted:
 Outcome:
   Fixed. GitHub Actions completed successfully and uploaded the Windows
   executable artifact.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T19:48:29+02:00
+Error:
+  The uploaded executable exited immediately and displayed nothing because the
+  portable reader still expected the old 8-byte RustDesk package marker while
+  the generated InforiaConnect marker is 14 bytes.
+Fix attempted:
+  Changed the reader to use the complete `InforiaConnect` marker, made
+  `Setup.exe` names open installation mode, and added runtime smoke tests.
+Outcome:
+  Validation will run in the next GitHub Actions build.

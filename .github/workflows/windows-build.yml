@@ -223,6 +223,43 @@ jobs:
         run: |
           mkdir -p ./Output
           mv ./InforiaConnect-*-install.exe ./Output/InforiaConnect-Windows-Setup.exe
+
+      - name: Smoke test packaged launcher
+        shell: pwsh
+        run: |
+          $package = Join-Path $env:GITHUB_WORKSPACE 'Output\InforiaConnect-Windows-Setup.exe'
+          $extractDir = Join-Path $env:LOCALAPPDATA 'InforiaConnect'
+          Remove-Item -LiteralPath $extractDir -Recurse -Force -ErrorAction SilentlyContinue
+
+          & cargo test --manifest-path libs/portable/Cargo.toml --release
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Portable launcher tests failed.'
+          }
+
+          $process = Start-Process -FilePath $package -ArgumentList '--version' -PassThru
+          if (-not $process.WaitForExit(30000)) {
+            Stop-Process -Id $process.Id -Force
+            throw 'Packaged launcher did not exit within 30 seconds.'
+          }
+          if ($process.ExitCode -ne 0) {
+            throw "Packaged launcher exited with code $($process.ExitCode)."
+          }
+
+          $extractedApp = Join-Path $extractDir 'InforiaConnect.exe'
+          if (-not (Test-Path -LiteralPath $extractedApp -PathType Leaf)) {
+            throw "Packaged launcher did not extract $extractedApp."
+          }
+
+          $appProcess = Start-Process -FilePath $extractedApp -ArgumentList '--version' -PassThru
+          if (-not $appProcess.WaitForExit(30000)) {
+            Stop-Process -Id $appProcess.Id -Force
+            throw 'Extracted InforiaConnect application did not exit within 30 seconds.'
+          }
+          if ($appProcess.ExitCode -ne 0) {
+            throw "Extracted InforiaConnect application exited with code $($appProcess.ExitCode)."
+          }
+
+          Write-Host "Packaged launcher extracted and started InforiaConnect successfully."
           
       - name: Upload installer
         uses: actions/upload-artifact@v4

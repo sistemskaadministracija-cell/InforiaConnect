@@ -174,6 +174,11 @@ fn execute(path: PathBuf, args: Vec<String>, _ui: bool) {
     }
 }
 
+fn is_setup_executable(path: &str) -> bool {
+    let path = path.to_ascii_lowercase();
+    path.ends_with("install.exe") || path.ends_with("setup.exe")
+}
+
 fn main() {
     let mut args = Vec::new();
     let mut arg_exe = Default::default();
@@ -186,7 +191,7 @@ fn main() {
         }
         i += 1;
     }
-    let click_setup = args.is_empty() && arg_exe.to_lowercase().ends_with("install.exe");
+    let click_setup = args.is_empty() && is_setup_executable(&arg_exe);
     #[cfg(windows)]
     let quick_support = args.is_empty() && win::is_quick_support_exe(&arg_exe);
     #[cfg(not(windows))]
@@ -207,6 +212,18 @@ fn main() {
             args = vec!["--quick_support".to_owned()];
         }
         execute(exe, args, ui);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::is_setup_executable;
+
+    #[test]
+    fn recognizes_install_and_setup_names() {
+        assert!(is_setup_executable("InforiaConnect-install.exe"));
+        assert!(is_setup_executable("InforiaConnect-Windows-Setup.exe"));
+        assert!(!is_setup_executable("InforiaConnect.exe"));
     }
 }
 
@@ -246,4 +263,3 @@ mod win {
         exe.contains("-qs-") || exe.contains("-qs.exe") || exe.contains("_qs.exe")
     }
 }
-
