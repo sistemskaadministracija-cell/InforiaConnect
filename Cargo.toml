@@ -212,8 +212,8 @@ exclude = ["vdi/host", "examples/custom_plugin"]
 [patch.crates-io]
 libxdo-sys = { path = "libs/libxdo-sys-stub" }
 
-# FORCE UPSTREAM TO STAY LOCKED ON THE OLD TAG MANUALLY TO STOP THE BRIDGE GENERATOR PANIC
-tray-icon = { git = "https://github.com/tauri-apps/tray-icon", tag = "v0.21.3" }
+# Override the broken git dependency parsing by locking tray-icon directly to the registry version
+tray-icon = { git = "https://github.com/tauri-apps/tray-icon", rev = "06b72a0dbdb9079a0b12b5fb4e815049cf10469b" }
 
 [package.metadata.winres]
 LegalCopyright = "Copyright © 2025 Purslane Ltd. All rights reserved."
