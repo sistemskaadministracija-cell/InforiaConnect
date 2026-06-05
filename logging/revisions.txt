@@ -600,3 +600,55 @@ Validation:
   - Confirmed `get_InforiaConnect_app_name` returns the shared APP_NAME value.
   - Confirmed the new workflow assertion requires the branded install title.
   - Full branded runtime validation is delegated to GitHub Actions.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T22:35:02+02:00
+Title: Complete InforiaConnect application and installer branding
+Cancelled GitHub Actions run:
+  InforiaConnect Windows [baseline] - Fix installer runtime branding
+  Run ID: 27037853475
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Complete InforiaConnect branding
+
+Changed areas:
+  - Added the original Inforia logo variants under branding/ as tracked source
+    assets.
+  - Added Flutter logo and light/dark icon assets.
+  - Replaced the Windows application, tray, portable setup, and Flutter runner
+    icons with the Inforia circle logo in seven ICO resolutions.
+  - Added the wide Inforia logo to the main client and installation page.
+  - Added the compact Inforia logo to the lower-left desktop home area.
+  - Added the Inforia logo to the About page.
+  - Rebranded the portable extraction splash with a white Inforia wordmark on
+    the main Inforia blue background.
+  - Changed the main theme color to #428bca and aligned title-bar, button,
+    border, and About-card colors.
+  - Replaced remaining user-visible RustDesk and Purslane labels in desktop,
+    mobile, Android, iOS, Windows metadata, Cargo metadata, and CLI metadata.
+  - Preserved RustDesk protocol schemes, internal class names, dependency
+    names, and upstream service identifiers where changing them could break
+    compatibility.
+
+Reasons:
+  - The previous build could open the installation window but still used
+    incomplete or upstream visual branding.
+  - Flutter expected logo.png and icon.png assets that were not present, so
+    branding could silently disappear at runtime.
+  - Windows executable metadata and setup resources must identify Inforia and
+    InforiaConnect consistently in Explorer, shortcuts, the taskbar, and the
+    installer.
+  - Separate blue and white icon variants preserve contrast on light and dark
+    UI backgrounds.
+
+Validation:
+  - Cancelled the incomplete branding workflow before making these changes.
+  - Confirmed all required branding PNG files exist.
+  - Confirmed each Windows ICO contains seven image resolutions.
+  - Confirmed Cargo metadata resolves with Cargo.lock using --locked.
+  - Confirmed touched Rust files pass rustfmt.
+  - Confirmed Android XML and iOS plist files remain structurally valid XML.
+  - Confirmed git diff --check reports no whitespace errors.
+  - Confirmed the user-visible upstream branding scan is clean.
+  - Windows compilation and runtime installer validation remain delegated to
+    GitHub Actions.

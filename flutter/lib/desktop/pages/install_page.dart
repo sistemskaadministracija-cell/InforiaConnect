@@ -136,6 +136,16 @@ class _InstallPageBodyState extends State<_InstallPageBody>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(
+                child: Image.asset(
+                  'assets/logo.png',
+                  width: 260,
+                  height: 58,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const SizedBox.shrink(),
+                ),
+              ).marginOnly(bottom: 2 * em),
               Text(translate('Installation'),
                   style: Theme.of(context).textTheme.headlineMedium),
               Row(

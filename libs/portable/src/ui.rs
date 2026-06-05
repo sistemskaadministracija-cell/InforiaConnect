@@ -5,8 +5,8 @@ use std::cell::RefCell;
 const GIF_DATA: &[u8] = include_bytes!("./res/spin.gif");
 const LABEL_DATA: &[u8] = include_bytes!("./res/label.png");
 const GIF_SIZE: i32 = 32;
-const BG_COLOR: [u8; 3] = [90, 90, 120];
-const BORDER_COLOR: [u8; 3] = [40, 40, 40];
+const BG_COLOR: [u8; 3] = [66, 139, 202];
+const BORDER_COLOR: [u8; 3] = [50, 118, 177];
 const GIF_DELAY: u64 = 30;
 
 #[derive(Default)]
@@ -230,4 +230,3 @@ pub fn setup() {
         }
     });
 }
-

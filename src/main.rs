@@ -32,7 +32,6 @@ fn main() {
     }
     common::global_clean();
 }
-
 #[cfg(feature = "cli")]
 fn main() {
     if !common::global_init() {
@@ -48,7 +47,7 @@ fn main() {
     );
     let matches = App::new("InforiaConnect")
         .version(crate::VERSION)
-        .author("Purslane Ltd<info@InforiaConnect.com>")
+        .author("Inforia <info@InforiaConnect.com>")
         .about("InforiaConnect command line tool")
         .args_from_usage(&args)
         .get_matches();
@@ -102,4 +101,3 @@ fn main() {
     }
     common::global_clean();
 }
-

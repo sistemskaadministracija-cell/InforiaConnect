@@ -33,7 +33,7 @@ class DesktopHomePage extends StatefulWidget {
   State<DesktopHomePage> createState() => _DesktopHomePageState();
 }
 
-const borderColor = Color(0xFF2F65BA);
+const borderColor = MyTheme.accent;
 
 class _DesktopHomePageState extends State<DesktopHomePage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
@@ -173,7 +173,20 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                     onHover: (value) => _editHover.value = value,
                   ),
                 ),
-              )
+              ),
+            Positioned(
+              bottom: 8,
+              left: isOutgoingOnly ? 44 : 12,
+              child: IgnorePointer(
+                child: Image.asset(
+                  'assets/logo_compact.png',
+                  width: 118,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const SizedBox.shrink(),
+                ),
+              ),
+            )
           ],
         ),
       ),
