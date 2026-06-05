@@ -82,6 +82,14 @@
 ## Revision Logging And Git
 
 * Every repository change must be documented in `logging/revisions.txt`.
+* Record every confirmed build or packaging failure in
+  `logging/BuildError_log.txt`.
+* Each build-error entry must include an ISO 8601 timestamp with timezone,
+  Actions run ID, error evidence, root cause, fix or attempted fix, relevant
+  commit, status, and validation result.
+* Update an open build-error entry when its GitHub Actions validation finishes.
+  If a fix fails, preserve the attempted fix and add the repeated failure
+  instead of rewriting history.
 * Add the revision entry after the implementation is complete and before any
   commit or push.
 * Each entry must include the date, a concise title, changed files, what

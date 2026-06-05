@@ -186,3 +186,42 @@ Validation:
   - Confirmed the corrected relative path resolves from `libs/portable` to the
     root workspace `target/release` directory.
   - Full packaging and installer generation are delegated to GitHub Actions.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T17:30:52+02:00
+Title: Add a dedicated timestamped build-error ledger
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Add timestamped build error ledger
+
+Changed files:
+  - AGENTS.md
+  - logging/BuildError_log.txt
+  - logging/revisions.txt
+
+Changes:
+  - Created `logging/BuildError_log.txt` as a chronological record of confirmed
+    CI and packaging errors.
+  - Reconstructed the verified junction, Edition 2024, FFmpeg linker, Opus
+    include-path, and portable packer failures from Actions logs and Git
+    history.
+  - Recorded detection and fix timestamps, run IDs, root causes, attempted or
+    completed fixes, commits, statuses, and validation outcomes.
+  - Added permanent agent rules requiring every future confirmed build error
+    and fix to be timestamped in the dedicated log.
+  - Required failed attempts to remain in the history rather than being
+    overwritten after a later fix.
+
+Reasons:
+  - `revisions.txt` records repository changes, but a separate failure ledger
+    makes the build investigation sequence and repeated errors easier to audit.
+  - Precise timestamps and run IDs connect each diagnosis to authoritative
+    GitHub Actions evidence.
+  - Preserving unsuccessful attempts prevents the same ineffective fix from
+    being repeated.
+
+Validation:
+  - Cross-checked run IDs and failure timestamps with GitHub Actions.
+  - Cross-checked fix timestamps and commit hashes with Git history.
+  - Confirmed the new rules require updates before future commits and pushes.
+  - The active baseline build remains run 27023798667.
