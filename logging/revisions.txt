@@ -48,6 +48,38 @@ Validation:
 
 -------------------------------------------------------------------------------
 
+Timestamp: 2026-06-06T01:53:27+02:00
+Title: Expand professional Slovenian technical documentation
+
+Changed files:
+  - logging/InforiaConnect_Tehnicni_Pregled.docx
+  - logging/revisions.txt
+
+Changes:
+  - Corrected the former statement that ID blocking requires only firewall
+    rules or RustDesk Pro and documented the custom hbbs blocklist design.
+  - Added document ownership, scope, functional and nonfunctional
+    requirements, deployment and rollback, backup and recovery, monitoring,
+    acceptance testing, risk management, release governance, responsibilities,
+    and a technical glossary.
+  - Documented that the custom server image is still in CI validation and is
+    not yet deployed to the Linux VM.
+  - Preserved the existing topology image, tables, and original technical
+    sections while adding structured Slovenian headings and operational detail.
+
+Reasons:
+  - Turn the existing overview into a more complete internal technical and
+    operational reference suitable for professional maintenance.
+
+Validation:
+  - Confirmed the DOCX ZIP signature and all XML package parts are valid.
+  - Confirmed 11 new numbered sections (14 through 24) exist in document.xml.
+  - Preserved all 19 package entries and the existing embedded media.
+  - Word COM validation was inconclusive because hidden Word automation timed
+    out on this machine; no successful Word reopen is claimed.
+
+-------------------------------------------------------------------------------
+
 Date: 2026-06-05
 Title: Split Windows builds into baseline and accelerated profiles
 Intended GitHub Actions run name:
@@ -727,3 +759,39 @@ Validation:
   - Confirmed the DOCX ZIP signature and structural readability.
   - No application source or runtime configuration changed, so a Windows
     compilation is unnecessary.
+Timestamp: 2026-06-06T00:54:07+02:00
+Title: Display administrator-blocked device status
+
+Changed files:
+  - flutter/lib/desktop/pages/connection_page.dart
+  - libs/hbb_common/protos/rendezvous.proto
+  - logging/revisions.txt
+  - src/lang/en.rs
+  - src/lang/sl.rs
+  - src/rendezvous_mediator.rs
+
+Changes:
+  - Added the custom BLOCKED registration result used by the InforiaConnect
+    server fork.
+  - Persisted the blocked state in client configuration and cleared it
+    automatically after the server accepts registration again.
+  - Displayed "Blocked by administrator" instead of Ready while the device is
+    on the server blocklist, with English and Slovenian text.
+  - Reused the 30-second registration retry throttle so blocked clients can
+    detect unblocking without flooding hbbs.
+
+Reasons:
+  - Give the user an explicit explanation when an administrator blocks the
+    device instead of showing a misleading Ready state.
+  - Make temporary blocks reversible without reinstalling the client or
+    deleting its stable ID.
+
+Validation:
+  - Confirmed Git diff whitespace checks pass.
+  - Confirmed the new result value matches the raw value returned by the
+    custom server fork.
+  - Local Windows compilation was not attempted because GitHub Actions is the
+    authoritative build environment.
+  - Intended Actions run name: Administrator ID block status - Windows baseline.
+
+-------------------------------------------------------------------------------
