@@ -127,4 +127,17 @@ Fix attempted:
   Updated the runner to request the exported InforiaConnect core-main and
   application-name functions.
 Outcome:
+  Fixed. The setup window opened successfully, exposing a remaining RustDesk
+  title in the runtime configuration.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T22:15:10+02:00
+Error:
+  The installer window opened, but its title was `RustDesk - Install` because
+  the shared runtime application name was still hard-coded as RustDesk.
+Fix attempted:
+  Set the runtime application name to InforiaConnect and require the branded
+  installer title in the workflow smoke test.
+Outcome:
   Validation will run in the next GitHub Actions build.

@@ -556,3 +556,47 @@ Validation:
     under the name already used by the runner.
   - Full compilation and visible installation-window validation are delegated
     to GitHub Actions.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T22:15:10+02:00
+Title: Apply the InforiaConnect runtime name to the installer UI
+Successful startup GitHub Actions run:
+  InforiaConnect Windows [baseline] - Fix branded Rust symbol lookup
+  Run ID: 27036193036
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Fix installer runtime branding
+
+Changed files:
+  - .github/workflows/windows-build.yml
+  - libs/hbb_common/src/config.rs
+  - logging/BuildError_log.txt
+  - logging/revisions.txt
+
+Observed issue:
+  - Package parsing, extraction, branded DLL loading, Rust symbol lookup, and
+    Flutter window creation all succeeded.
+  - The runtime smoke test opened `RustDesk - Install`.
+  - `hbb_common::config::APP_NAME` was still initialized to `RustDesk`, and the
+    exported application-name function returned that value to the runner.
+
+Changes:
+  - Changed the authoritative shared runtime application name to
+    `InforiaConnect`.
+  - Strengthened the setup smoke test to require the exact window title
+    `InforiaConnect - Install`.
+  - Artifact upload now rejects an installer that opens with upstream RustDesk
+    branding.
+
+Reasons:
+  - Application title, configuration paths, service naming, and installation
+    UI derive from the shared runtime application name.
+  - A technically working RustDesk-branded window does not satisfy the
+    InforiaConnect custom-client requirement.
+
+Validation:
+  - Confirmed run 27036193036 opened a real install window.
+  - Confirmed the observed title was `RustDesk - Install`.
+  - Confirmed `get_InforiaConnect_app_name` returns the shared APP_NAME value.
+  - Confirmed the new workflow assertion requires the branded install title.
+  - Full branded runtime validation is delegated to GitHub Actions.

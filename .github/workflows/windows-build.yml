@@ -272,6 +272,11 @@ jobs:
             throw 'Packaged launcher did not open the InforiaConnect installation window.'
           }
 
+          $expectedTitle = 'InforiaConnect - Install'
+          if ($appProcess.MainWindowTitle -ne $expectedTitle) {
+            throw "Expected window title '$expectedTitle', got '$($appProcess.MainWindowTitle)'."
+          }
+
           Write-Host "Opened window: $($appProcess.MainWindowTitle)"
           Stop-Process -Id $appProcess.Id -Force
           
