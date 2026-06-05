@@ -124,34 +124,25 @@ jobs:
           ./bootstrap-vcpkg.bat -disableMetrics
           echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
 
-      - name: Install vcpkg dependencies
-        shell: pwsh
-        run: |
-          # Run vcpkg in classic mode to install FFmpeg directly to C:\vcpkg\installed
-          # This is what hwcodec expects - it hardcodes C:\vcpkg\installed in its build script
-          C:\vcpkg\vcpkg.exe install ffmpeg:x64-windows-static --classic
-
-      - name: Build InforiaConnect Portable Installer
-        shell: bash
-        env:
-          VCPKG_ROOT: 'C:\vcpkg'
-          FFMPEG_DIR: 'C:\vcpkg\installed\x64-windows-static'
-          BINDGEN_EXTRA_CLANG_ARGS: "-IC:/vcpkg/installed/x64-windows-static/include"
-          RUSTFLAGS: >-
-            -L native=C:/vcpkg/installed/x64-windows-static/lib
-            -C link-arg=swresample.lib
-            -C link-arg=strmiids.lib
-            -C link-arg=mfplat.lib
-            -C link-arg=mfuuid.lib
-        run: |
-          python3 build.py --portable --hwcodec --flutter --vram 2>&1
-          echo "Build exit code: $?"
-
-      - name: Prepare Installer Artifact
+      - name: Build InforiaConnect
         shell: bash
         run: |
+          python3 build.py --portable --hwcodec --flutter --vram --skip-portable-pack 2>&1
+          echo "Exit code: $?"
+
+      - name: Build portable installer
+        shell: bash
+        run: |
+          sed -i '/dpiAware/d' res/manifest.xml
+          pushd ./libs/portable
+          pip3 install -r requirements.txt
+          python3 ./generate.py \
+            -f ../../flutter/build/windows/x64/runner/Release/ \
+            -o . \
+            -e ../../flutter/build/windows/x64/runner/Release/InforiaConnect.exe
+          popd
           mkdir -p ./Output
-          mv ./InforiaConnect-*-install.exe ./Output/InforiaConnect-Windows-Setup.exe
+          mv ./target/release/InforiaConnect-portable-packer.exe ./Output/InforiaConnect-Windows-Setup.exe
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
