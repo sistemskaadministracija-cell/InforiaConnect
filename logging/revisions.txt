@@ -505,3 +505,54 @@ Validation:
   - Confirmed the Flutter Windows runner allows `--install` and creates an
     install-page window for that argument.
   - Full UI startup validation is delegated to GitHub Actions.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T21:38:02+02:00
+Title: Align Windows runner symbol lookup with branded Rust exports
+Failed GitHub Actions run:
+  InforiaConnect Windows [baseline] - Validate setup installation window
+  Run ID: 27034554116
+Intended GitHub Actions run name:
+  InforiaConnect Windows [baseline] - Fix branded Rust symbol lookup
+
+Changed files:
+  - flutter/windows/runner/main.cpp
+  - logging/BuildError_log.txt
+  - logging/revisions.txt
+
+Failure:
+  - Package tests, extraction, package exit code, embedded executable presence,
+    and branded DLL presence all passed.
+  - No InforiaConnect process created a window within 30 seconds.
+  - Inspection showed the Windows runner requested
+    `rustdesk_core_main_args`, which is not exported by the branded Rust DLL.
+  - The Rust DLL exports `InforiaConnect_core_main_args`.
+  - The runner also requested `get_rustdesk_app_name`, while the DLL exports
+    `get_InforiaConnect_app_name`.
+  - This disproved the previous duplicate-instance hypothesis; that attempted
+    smoke-test adjustment is preserved in the history.
+
+Changes:
+  - Updated core-main symbol lookup to
+    `InforiaConnect_core_main_args`.
+  - Updated application-name symbol lookup to
+    `get_InforiaConnect_app_name`.
+  - Changed the fallback Windows title from RustDesk to InforiaConnect.
+  - Updated the startup diagnostic message for the core-main symbol.
+  - Retained the no-argument setup launch and visible-window runtime gate.
+
+Reasons:
+  - `GetProcAddress` requires the exact exported symbol name.
+  - The runner cannot initialize the Rust core or proceed to Flutter when the
+    core-main lookup returns null.
+
+Validation:
+  - Confirmed the two branded functions are exported with `#[no_mangle]` in
+    `src/flutter.rs`.
+  - Confirmed no definition of `rustdesk_core_main_args` exists in the current
+    Rust source.
+  - Confirmed `free_c_args`, the third required runner symbol, remains exported
+    under the name already used by the runner.
+  - Full compilation and visible installation-window validation are delegated
+    to GitHub Actions.

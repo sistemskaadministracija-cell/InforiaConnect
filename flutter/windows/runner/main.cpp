@@ -29,10 +29,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
     return EXIT_FAILURE;
   }
   FUNC_RUSTDESK_CORE_MAIN rustdesk_core_main =
-      (FUNC_RUSTDESK_CORE_MAIN)GetProcAddress(hInstance, "rustdesk_core_main_args");
+      (FUNC_RUSTDESK_CORE_MAIN)GetProcAddress(hInstance, "InforiaConnect_core_main_args");
   if (!rustdesk_core_main)
   {
-    std::cout << "Failed to get rustdesk_core_main." << std::endl;
+    std::cout << "Failed to get InforiaConnect_core_main_args." << std::endl;
     return EXIT_FAILURE;
   }
   FUNC_RUSTDESK_FREE_ARGS free_c_args =
@@ -63,8 +63,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   std::vector<std::string> rust_args(c_args, c_args + args_len);
   free_c_args(c_args, args_len);
 
-  std::wstring app_name = L"RustDesk";
-  FUNC_RUSTDESK_GET_APP_NAME get_rustdesk_app_name = (FUNC_RUSTDESK_GET_APP_NAME)GetProcAddress(hInstance, "get_rustdesk_app_name");
+  std::wstring app_name = L"InforiaConnect";
+  FUNC_RUSTDESK_GET_APP_NAME get_rustdesk_app_name =
+      (FUNC_RUSTDESK_GET_APP_NAME)GetProcAddress(hInstance, "get_InforiaConnect_app_name");
   if (get_rustdesk_app_name) {
     wchar_t app_name_buffer[512] = {0};
     if (get_rustdesk_app_name(app_name_buffer, 512) == 0) {

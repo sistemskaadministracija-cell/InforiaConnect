@@ -114,4 +114,17 @@ Fix attempted:
   Changed the smoke test to launch `Setup.exe` normally and require the first
   embedded InforiaConnect process to open an installation window.
 Outcome:
+  This did not fix startup. The next run showed that no application window was
+  created, disproving the duplicate-instance explanation.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-05T21:38:02+02:00
+Error:
+  The Windows runner loaded the branded DLL but requested old RustDesk export
+  names that do not exist in the custom library, so startup stopped before UI.
+Fix attempted:
+  Updated the runner to request the exported InforiaConnect core-main and
+  application-name functions.
+Outcome:
   Validation will run in the next GitHub Actions build.
