@@ -26,6 +26,7 @@ jobs:
         uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
+          
 
       - name: Install flutter
         uses: subosito/flutter-action@v2.12.0
@@ -48,7 +49,7 @@ jobs:
           pushd flutter
           flutter pub run build_runner build --delete-conflicting-outputs
           popd
-
+            
       - name: Upload bridge artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -124,26 +125,71 @@ jobs:
           ./bootstrap-vcpkg.bat -disableMetrics
           echo "VCPKG_ROOT=C:/vcpkg" >> $GITHUB_ENV
 
-      - name: Build InforiaConnect
-        shell: bash
+      - name: Install FFmpeg via vcpkg
         run: |
-          python3 build.py --portable --hwcodec --flutter --vram --skip-portable-pack 2>&1
-          echo "Exit code: $?"
+          C:\vcpkg\vcpkg.exe install --triplet x64-windows-static
 
-      - name: Build portable installer
+      - name: Fix FFmpeg Header Paths for MSVC
+        shell: pwsh
+        run: |
+          $rootInc = "${{ github.workspace }}/vcpkg_installed/x64-windows-static/include"
+          $required = @("libavcodec", "libavutil", "libavformat", "libswscale")
+          
+          Write-Host "Locating FFmpeg headers in manifest workspace: $rootInc"
+          foreach ($folder in $required) {
+              $targetPath = Join-Path $rootInc $folder
+              
+              if (!(Test-Path $targetPath)) {
+                  $found = Get-ChildItem -Path $rootInc -Directory -Recurse -Filter $folder -ErrorAction SilentlyContinue | Select-Object -First 1
+                  
+                  if ($found) {
+                      Write-Host "Found $folder at $($found.FullName). Moving to root..."
+                      Move-Item -Path $found.FullName -Destination $rootInc -Force
+                  } else {
+                      Write-Error "CRITICAL: $folder could not be found anywhere in $rootInc! vcpkg installation failed."
+                  }
+              } else {
+                  Write-Host "$folder is already in the correct root path."
+              }
+          }
+              
+      - name: Build InforiaConnect Portable Installer
+        shell: bash
+        env:
+          VCPKG_ROOT: 'C:\vcpkg'
+          FFMPEG_DIR: '${{ github.workspace }}/vcpkg_installed/x64-windows-static'
+          RUSTFLAGS: >-
+            -L native=${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib 
+            -C link-arg=/LIBPATH:${{ github.workspace }}/vcpkg_installed/x64-windows-static/lib 
+            -C link-arg=swresample.lib 
+            -C link-arg=strmiids.lib 
+            -C link-arg=mfplat.lib 
+            -C link-arg=mfuuid.lib
+            -C link-arg=/VERBOSE
+          BINDGEN_EXTRA_CLANG_ARGS: "-I${{ github.workspace }}/vcpkg_installed/x64-windows-static/include"
+        run: |
+          # 1. Clean out any corrupted or pre-existing folders/links safely using the correct spelling
+          powershell -Command "if (Test-Path 'C:\vcpkg\installed') { Remove-Item -Recurse -Force 'C:\vcpkg\installed' }"
+          
+          # 2. Re-create the parent directory structure
+          powershell -Command "New-Item -ItemType Directory -Force -Path 'C:\vcpkg\installed'"
+          
+          # 3. Create the Junction Link pointing seamlessly to the working manifest dir
+          powershell -Command "New-Item -ItemType Junction -Path 'C:\vcpkg\installed\x64-windows-static' -Value '${{ github.workspace }}\vcpkg_installed\x64-windows-static'"
+          
+          # Force underlying cargo builds inside the python script to output full linker detail
+          export CARGO_TERM_VERBOSE=true
+
+          # 4. Kick off the compilation pipeline
+          python3 build.py --portable --hwcodec --flutter --vram 2>&1
+          echo "Build script completed with exit code: $?"
+
+      - name: Prepare Installer Artifact
         shell: bash
         run: |
-          sed -i '/dpiAware/d' res/manifest.xml
-          pushd ./libs/portable
-          pip3 install -r requirements.txt
-          python3 ./generate.py \
-            -f ../../flutter/build/windows/x64/runner/Release/ \
-            -o . \
-            -e ../../flutter/build/windows/x64/runner/Release/InforiaConnect.exe
-          popd
           mkdir -p ./Output
-          mv ./target/release/InforiaConnect-portable-packer.exe ./Output/InforiaConnect-Windows-Setup.exe
-
+          mv ./InforiaConnect-*-install.exe ./Output/InforiaConnect-Windows-Setup.exe
+          
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
