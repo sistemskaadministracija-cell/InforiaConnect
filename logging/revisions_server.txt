@@ -27,6 +27,32 @@ Validation:
 
 -------------------------------------------------------------------------------
 
+Timestamp: 2026-06-06T03:41:18+02:00
+Title: Validate live ID block and final CI configuration
+
+Changes:
+  - Temporarily blocked local test ID 496057868 on the production custom hbbs.
+  - Removed the test ID and confirmed the persistent blocklist returned empty.
+  - Completed final client and server workflow validation after CI path
+    filtering changes.
+
+Validation:
+  - hbbs hot-reloaded one blocked ID.
+  - hbbs rejected RegisterPeer and RegisterPk for the test ID repeatedly.
+  - hbbs hot-reloaded zero blocked IDs after removal.
+  - The production blocked_ids.txt file is empty.
+  - Server workflow 27048204295 passed tests, static builds, image publication,
+    and image smoke tests.
+  - Client workflow 27048204080 passed bridge generation, baseline build,
+    packaging, launcher smoke testing, and artifact upload.
+
+Remaining acceptance item:
+  - The newly built Windows installer requires UAC elevation to replace the
+    installed service. After installation, the visible Slovenian blocked
+    status and the requested temporary block of ID 248136051 must be tested.
+
+-------------------------------------------------------------------------------
+
 Timestamp: 2026-06-06T03:04:32+02:00
 Title: Prevent redundant server and client CI runs
 

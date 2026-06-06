@@ -48,6 +48,20 @@ Validation:
 
 -------------------------------------------------------------------------------
 
+Timestamp: 2026-06-06T03:41:18+02:00
+Title: Complete final Windows workflow validation
+
+Changes:
+  - Validated the documentation-only path exclusions in the Windows workflow.
+
+Validation:
+  - GitHub Actions run 27048204080 completed successfully.
+  - Bridge generation, baseline build, artifact preparation, launcher smoke
+    test, and installer upload all passed.
+  - The final log-only push is expected not to start a Windows build.
+
+-------------------------------------------------------------------------------
+
 Timestamp: 2026-06-06T03:04:32+02:00
 Title: Skip Windows builds for documentation-only pushes
 
