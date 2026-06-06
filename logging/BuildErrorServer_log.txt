@@ -31,6 +31,7 @@ Error:
 Fix attempted:
   Set mode 0755 explicitly for hbbs and hbbr during Docker COPY.
 Outcome:
-  Validation is running in the next GitHub Actions server-image workflow.
+  Fixed. GitHub Actions run 27046280606 compiled and tested the server,
+  published the image, and passed hbbs and hbbr smoke tests.
 
 -------------------------------------------------------------------------------

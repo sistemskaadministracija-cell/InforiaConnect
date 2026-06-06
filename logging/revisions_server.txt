@@ -124,8 +124,32 @@ Reasons:
 
 Validation:
   - Server source, blocklist tests, static compilation, image build, and image
-    publication passed before the smoke test.
-  - GitHub Actions run for this correction is being monitored.
+    publication passed.
+  - GitHub Actions run 27046280606 passed both published-image smoke tests.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T02:17:05+02:00
+Title: Complete custom server image validation and pre-deployment audit
+
+Changes:
+  - Closed the executable-permission build error as fixed.
+  - Verified the published image is accessible from the Linux VM.
+  - Captured the current hbbs/hbbr image, commands, host networking, restart
+    policy, persistent mount, listeners, disk use, and security-update state.
+  - Recorded security observations without changing VM configuration.
+
+Reasons:
+  - Establish a verified baseline and rollback reference before replacing the
+    production containers.
+
+Validation:
+  - GitHub Actions run 27046280606 completed successfully.
+  - Published hbbs and hbbr image smoke tests passed.
+  - VM image manifest access succeeded.
+  - Current containers remain healthy and unchanged.
+  - UFW is inactive, SSH password authentication is enabled, unattended
+    upgrades are active, and no network or security setting was modified.
 
 -------------------------------------------------------------------------------
 
