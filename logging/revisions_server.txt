@@ -27,6 +27,24 @@ Validation:
 
 -------------------------------------------------------------------------------
 
+Timestamp: 2026-06-06T03:04:32+02:00
+Title: Prevent redundant server and client CI runs
+
+Changes:
+  - Excluded client documentation and audit logs from automatic Windows builds.
+  - Limited server image builds to files that can change the compiled image.
+  - Cancelled redundant workflows started by audit-only commits.
+
+Reasons:
+  - Reduce CI time and noise while keeping authoritative builds for all
+    implementation and build-pipeline changes.
+
+Validation:
+  - The client source build and server image build had already passed.
+  - Both workflow definitions retain manual dispatch with descriptive names.
+
+-------------------------------------------------------------------------------
+
 Timestamp: 2026-06-06T03:03:15+02:00
 Title: Complete VM security audit and container isolation hardening
 

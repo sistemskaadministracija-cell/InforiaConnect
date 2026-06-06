@@ -4,6 +4,10 @@ run-name: ${{ format('InforiaConnect Windows [{0}] - {1}', inputs.build_profile 
 on:
   push:
     branches: [master, main]
+    paths-ignore:
+      - "logging/**"
+      - "**/*.md"
+      - "**/*.txt"
   workflow_dispatch:
     inputs:
       build_name:

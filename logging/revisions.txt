@@ -48,6 +48,31 @@ Validation:
 
 -------------------------------------------------------------------------------
 
+Timestamp: 2026-06-06T03:04:32+02:00
+Title: Skip Windows builds for documentation-only pushes
+
+Changed files:
+  - .github/workflows/windows-build.yml
+  - logging/revisions.txt
+
+Changes:
+  - Excluded Markdown, text logs, and the logging directory from automatic
+    Windows push builds.
+
+Reasons:
+  - Prevent revision-log and documentation commits from starting expensive,
+    redundant installer builds while preserving builds for source and workflow
+    changes.
+
+Validation:
+  - Confirmed the successful source build remains run 27047079246.
+  - Cancelled the superseded documentation-only workflow.
+  - This workflow-file change intentionally triggers one final validation run.
+  - Intended Actions run name:
+    Skip documentation-only Windows builds.
+
+-------------------------------------------------------------------------------
+
 Timestamp: 2026-06-06T02:56:00+02:00
 Title: Validate administrator-blocked client installer
 
