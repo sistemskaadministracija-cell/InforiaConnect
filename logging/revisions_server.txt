@@ -330,3 +330,69 @@ Validation:
     SSH, or other network configuration was changed.
 
 -------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T17:06:11+02:00
+Title: Update, reboot, firewall-harden, and document the Linux server
+
+Changed systems and files:
+  - Linux VM 192.168.145.111
+  - Docker CE and related Ubuntu packages
+  - /etc/ufw and /etc/default/ufw
+  - logging/InforiaConnectServer_Tehnicni_pregled.docx
+  - logging/LatestConnection_commands.txt
+  - logging/Server_commands.txt
+  - logging/revisions_server.txt
+  - logging/BuildErrorServer_log.txt
+
+Changes:
+  - Created and checksum-verified a new persistent-data backup plus a
+    docker-inspect snapshot before maintenance.
+  - Upgraded Docker CE, Docker CLI, buildx, rootless extras, Docker model
+    plugin, and snapd through apt full-upgrade.
+  - Rebooted only the Linux VM and verified the updated kernel
+    7.0.0-22-generic, Docker 29.5.3, and zero pending upgrades.
+  - Backed up the pre-change UFW configuration.
+  - Enabled UFW with default deny incoming, allow outgoing, and deny routed.
+  - Restricted TCP 22 to the Inforia LAN subnet 192.168.145.0/24.
+  - Allowed public TCP 21115-21119 and UDP 21116 for InforiaConnect.
+  - Enabled low-volume UFW logging and persistent startup.
+  - Created the separate Slovenian server technical and operational document,
+    version 1.0, covering architecture, deployment, ports, UFW, Docker
+    hardening, keys, ID blocking, monitoring, backups, recovery, incidents,
+    maintenance, and verified acceptance results.
+  - Preserved the existing read-only server monitoring command reference under
+    its clearer filename `logging/Server_commands.txt`; contents are unchanged.
+
+Reasons:
+  - Apply pending security and Docker updates, clear the required reboot, and
+    reduce the VM attack surface to only the ports required by the service.
+  - Preserve SSH administration from the trusted office LAN while preventing
+    public SSH access.
+  - Complete auditable production documentation for the Linux relay/ID
+    infrastructure.
+
+Validation:
+  - Backup
+    /home/inforiaadmin/inforiaconnect-backups/rustdesk-pre-maintenance-20260606T142800Z.tar.gz
+    passed sha256sum verification.
+  - UFW backup
+    /home/inforiaadmin/inforiaconnect-backups/ufw-pre-hardening-20260606T143514Z.tar.gz
+    passed sha256sum verification.
+  - The VM returned after reboot with no failed systemd units, no pending
+    packages, and no reboot-required marker.
+  - hbbs and hbbr autostarted from the same immutable image digest, remained
+    unprivileged/read-only, and reported restart count 0.
+  - The server public-key checksum remained
+    cd9215dc39a9d42a4324daca81f2f7286b941b6527a22f3131e81ad8e0711534.
+  - The production blocklist remained empty.
+  - A fresh SSH login from 192.168.145.141 succeeded after UFW activation.
+  - TCP 21115-21119 all succeeded from the LAN; UDP 21116 remained listening
+    and explicitly allowed.
+  - An external client from public IP 89.212.162.181 was established on
+    TCP 21116 after UFW activation.
+  - UFW is active and enabled with only the approved rules.
+  - The server DOCX reopened successfully with 13 pages, approximately 1,620
+    words, 430 paragraphs, 13 tables, and one embedded Inforia logo.
+  - No Windows update, reboot, firewall, route, or network setting was changed.
+
+-------------------------------------------------------------------------------

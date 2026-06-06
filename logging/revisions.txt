@@ -932,3 +932,43 @@ Validation:
     still required to remove unknown-publisher warnings.
 
 -------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T17:06:11+02:00
+Title: Finalize the Slovenian Windows client technical documentation
+
+Changed files:
+  - logging/InforiaConnect_Tehnicni_Pregled.docx
+  - logging/revisions.txt
+  - logging/BuildError_log.txt
+
+Changes:
+  - Replaced the mixed and partially outdated overview with a client-focused,
+    professionally formatted Slovenian technical document, version 2.0.
+  - Documented the Flutter/Rust architecture, Inforia branding, network flow,
+    LAN hairpin/split-DNS requirement, stable client identity, public-key
+    model, administrator ID blocking, build profiles, GitHub Actions release
+    pipeline, installation, configuration paths, diagnostics, security,
+    acceptance tests, release management, and known limitations.
+  - Recorded the final public installer URL, file size, SHA-256, release tag,
+    successful workflow, live block/unblock test, and unsigned Authenticode
+    status.
+  - Moved detailed Linux VM, Docker, UFW, backup, recovery, and incident
+    procedures into the separate server technical document.
+
+Reasons:
+  - Ensure the client documentation reflects the final tested production
+    installer instead of historical deployment assumptions.
+  - Keep client and server responsibilities separate and suitable for
+    professional operational use.
+
+Validation:
+  - Reopened the final DOCX read-only through Microsoft Word automation.
+  - Confirmed 10 pages, approximately 1,300 words, 296 paragraphs, 10 tables,
+    and one embedded Inforia logo.
+  - Confirmed the DOCX package contains valid document and styles XML plus an
+    embedded media file with no external image link.
+  - Confirmed the release tag, blocklist behavior, and installer details are
+    present.
+  - Confirmed no private-key value or password assignment is present.
+
+-------------------------------------------------------------------------------

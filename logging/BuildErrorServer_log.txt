@@ -49,3 +49,30 @@ Outcome:
   reloaded zero IDs after the acceptance test cleanup.
 
 -------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T17:06:11+02:00
+Error:
+  The first pre-maintenance backup command let local PowerShell consume a
+  Linux timestamp expression, so tar received no valid output filename and
+  refused to create an empty archive.
+Fix attempted:
+  Generated a fixed UTC timestamp locally, passed explicit quoted Linux paths,
+  and repeated the backup with checksum verification.
+Outcome:
+  Fixed. The persistent-data archive and docker-inspect snapshot were created
+  before package updates and passed validation.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T17:06:11+02:00
+Error:
+  The first rollback-timer cancellation check contained Linux command
+  substitution that local PowerShell parsed before SSH could run it.
+Fix attempted:
+  Reissued a simple command without nested substitution and immediately
+  checked the UFW service and timer states.
+Outcome:
+  Fixed. The safety rollback timer is inactive; UFW remains active, enabled,
+  and accessible through a fresh LAN SSH connection.
+
+-------------------------------------------------------------------------------
