@@ -27,6 +27,45 @@ Validation:
 
 -------------------------------------------------------------------------------
 
+Timestamp: 2026-06-06T02:21:15+02:00
+Title: Deploy custom hbbs/hbbr and harden persistent data
+
+Changes:
+  - Pulled and validated immutable image digest
+    `sha256:2a029367efd204ed78f35d8a6e6707cd36c3a4a8dce6af77e1cba173cbd217c7`.
+  - Stopped the standard containers and created a consistent compressed backup
+    with a SHA-256 checksum.
+  - Deployed custom hbbs and hbbr with the original host network, restart
+    policy, persistent mount, relay address, and key mode.
+  - Added an empty persistent blocked_ids.txt file.
+  - Changed the persistent directory to mode 0750 and private key/database
+    files to mode 0600.
+  - Restarted both containers after permission hardening.
+
+Reasons:
+  - Activate server-side ID blocking while preserving production identity and
+    reducing local exposure of sensitive server data.
+
+Validation:
+  - Backup:
+    `/home/inforiaadmin/inforiaconnect-backups/rustdesk-20260606T001915Z.tar.gz`
+  - Both containers remained healthy after restart.
+  - TCP ports 21115-21119 and UDP 21116 are listening.
+  - Public-key checksum remained unchanged.
+  - hbbs loaded the database, existing private key, relay address, and zero
+    blocked IDs.
+  - No UFW, firewall, DNS, routing, port-forwarding, or SSH setting changed.
+  - Normal client re-registration and external connection remain acceptance
+    tests because no active client registered during the observation window.
+
+Security observations:
+  - UFW is inactive.
+  - SSH password authentication is enabled.
+  - Unattended security upgrades are enabled and active.
+  - Network/firewall and SSH changes require separate explicit approval.
+
+-------------------------------------------------------------------------------
+
 Timestamp: 2026-06-06T02:15:00+02:00
 Title: Clarify goal-completion scope for VM security work
 
