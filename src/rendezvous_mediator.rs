@@ -42,21 +42,21 @@ static SHOULD_EXIT: AtomicBool = AtomicBool::new(false);
 static MANUAL_RESTARTED: AtomicBool = AtomicBool::new(false);
 static SENT_REGISTER_PK: AtomicBool = AtomicBool::new(false);
 pub(crate) static NEEDS_DEPLOY: AtomicBool = AtomicBool::new(false);
+static BLOCKED_BY_ADMIN: AtomicBool = AtomicBool::new(false);
 // register_pk retry interval (ms) when device is awaiting deployment
 const DEPLOY_RETRY_INTERVAL: i64 = 30_000;
 lazy_static::lazy_static! {
     static ref LAST_NOT_DEPLOYED_REGISTER: Mutex<Option<Instant>> = Mutex::new(None);
 }
 
-// Single source of truth for the "awaiting deployment" backoff. The server has
-// already told us this device is not in its db; until the operator runs
-// `InforiaConnect --deploy --token <api_token>` there is no point re-running the
-// register path more often than DEPLOY_RETRY_INTERVAL. Gating in the timer
-// loops (rather than only inside register_pk) also avoids the
+// Single source of truth for registration-denied backoff. There is no point
+// re-running the register path more often than DEPLOY_RETRY_INTERVAL while the
+// server reports that deployment is required or the device is blocked. Gating
+// in the timer loops (rather than only inside register_pk) also avoids the
 // last_register_sent / fails / latency / UDP-rebind churn the loop would
 // otherwise spin on while no response ever comes back.
 async fn deploy_register_throttled() -> bool {
-    if !NEEDS_DEPLOY.load(Ordering::SeqCst) {
+    if !NEEDS_DEPLOY.load(Ordering::SeqCst) && !BLOCKED_BY_ADMIN.load(Ordering::SeqCst) {
         return false;
     }
     LAST_NOT_DEPLOYED_REGISTER
@@ -320,8 +320,10 @@ impl RendezvousMediator {
                     Ok(register_pk_response::Result::OK) => {
                         Config::set_key_confirmed(true);
                         Config::set_host_key_confirmed(&self.host_prefix, true);
+                        Config::set_option("blocked-by-admin".to_owned(), String::new());
                         *SOLVING_PK_MISMATCH.lock().await = "".to_owned();
                         NEEDS_DEPLOY.store(false, Ordering::SeqCst);
+                        BLOCKED_BY_ADMIN.store(false, Ordering::SeqCst);
                     }
                     Ok(register_pk_response::Result::UUID_MISMATCH) => {
                         self.handle_uuid_mismatch(sink).await?;
@@ -334,6 +336,16 @@ impl RendezvousMediator {
                         // Clear key_confirmed so the UI reflects the truth: this device is
                         // not currently registered. Covers the case where an online device
                         // was deleted by an admin while running.
+                        Config::set_key_confirmed(false);
+                        Config::set_host_key_confirmed(&self.host_prefix, false);
+                    }
+                    Ok(register_pk_response::Result::BLOCKED) => {
+                        if !BLOCKED_BY_ADMIN.load(Ordering::SeqCst) {
+                            log::warn!("This device was blocked by the server administrator.");
+                        }
+                        BLOCKED_BY_ADMIN.store(true, Ordering::SeqCst);
+                        NEEDS_DEPLOY.store(false, Ordering::SeqCst);
+                        Config::set_option("blocked-by-admin".to_owned(), "Y".to_owned());
                         Config::set_key_confirmed(false);
                         Config::set_host_key_confirmed(&self.host_prefix, false);
                     }
@@ -722,11 +734,8 @@ impl RendezvousMediator {
     }
 
     async fn register_pk(&mut self, socket: Sink<'_>) -> ResultType<()> {
-        // Throttle register_pk when the device is awaiting deployment: server
-        // already told us we're not in its db; sending more often than every
-        // DEPLOY_RETRY_INTERVAL ms is wasted traffic until the operator runs
-        // `InforiaConnect --deploy --token <api_token>`.
-        if NEEDS_DEPLOY.load(Ordering::SeqCst) {
+        // Throttle register_pk while the server is denying registration.
+        if NEEDS_DEPLOY.load(Ordering::SeqCst) || BLOCKED_BY_ADMIN.load(Ordering::SeqCst) {
             let mut last = LAST_NOT_DEPLOYED_REGISTER.lock().await;
             if let Some(t) = *last {
                 if (t.elapsed().as_millis() as i64) < DEPLOY_RETRY_INTERVAL {
@@ -990,4 +999,3 @@ impl Drop for CheckIfResendPk {
         }
     }
 }
-

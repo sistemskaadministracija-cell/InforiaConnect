@@ -35,6 +35,7 @@ class OnlineStatusWidget extends StatefulWidget {
 class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
   final _svcStopped = Get.find<RxBool>(tag: 'stop-service');
   final _svcIsUsingPublicServer = true.obs;
+  final _blockedByAdmin = false.obs;
   Timer? _updateTimer;
 
   double get em => 14.0;
@@ -155,16 +156,17 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
 
   _buildConnStatusMsg() {
     widget.onSvcStatusChanged?.call();
-    return Text(
-      _svcStopped.value
-          ? translate("Service is not running")
-          : stateGlobal.svcStatus.value == SvcStatus.connecting
-              ? translate("connecting_status")
-              : stateGlobal.svcStatus.value == SvcStatus.notReady
-                  ? translate("not_ready_status")
-                  : translate('Ready'),
-      style: TextStyle(fontSize: em),
-    );
+    var message = translate('Ready');
+    if (_svcStopped.value) {
+      message = translate("Service is not running");
+    } else if (_blockedByAdmin.value) {
+      message = translate("Blocked by administrator");
+    } else if (stateGlobal.svcStatus.value == SvcStatus.connecting) {
+      message = translate("connecting_status");
+    } else if (stateGlobal.svcStatus.value == SvcStatus.notReady) {
+      message = translate("not_ready_status");
+    }
+    return Text(message, style: TextStyle(fontSize: em));
   }
 
   updateStatus() async {
@@ -181,6 +183,8 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
       stateGlobal.svcStatus.value = SvcStatus.notReady;
     }
     _svcIsUsingPublicServer.value = await bind.mainIsUsingPublicServer();
+    _blockedByAdmin.value =
+        await bind.mainGetOption(key: 'blocked-by-admin') == 'Y';
     try {
       stateGlobal.videoConnCount.value = status['video_conn_count'] as int;
     } catch (_) {}
