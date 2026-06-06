@@ -81,9 +81,15 @@
 
 ## Revision Logging And Git
 
-* Every repository change must be documented in `logging/revisions.txt`.
-* Record every confirmed build or packaging failure in
+* Client changes must be documented in `logging/revisions.txt`.
+* Server, Linux VM, Docker, firewall, SSH, deployment, and hbbs/hbbr changes
+  must be documented in `logging/revisions_server.txt`.
+* Record confirmed client build or packaging failures in
   `logging/BuildError_log.txt`.
+* Record confirmed server build, image, deployment, or runtime failures in
+  `logging/BuildErrorServer_log.txt`.
+* Do not duplicate full server entries in the client logs. A short
+  cross-reference is sufficient when one coordinated change affects both.
 * Keep each build-error entry concise and human-readable. Include only an ISO
   8601 timestamp with timezone, a short error summary, what was attempted to
   fix it, and the outcome.
@@ -103,6 +109,17 @@
   revision logging.
 * Do not claim a push succeeded until the remote operation has completed.
 * Do not overwrite or rewrite unrelated user changes while preparing a commit.
+
+## Server Documentation
+
+* Keep the Windows client and Linux server technical documentation separate.
+* Create `logging/InforiaConnectServer_Tehnicni_pregled.docx` after the custom
+  server is deployed and end-to-end acceptance testing succeeds.
+* The final server document must be in Slovenian and cover architecture,
+  Docker deployment, ports, DNS, keys, ID blocking, security controls, UFW,
+  monitoring, backups, rollback, incident response, and verified test results.
+* Never include the private server key, passwords, access tokens, or private
+  SSH key material in documentation or Git.
 
 ## GitHub Actions Runs
 

@@ -1,0 +1,101 @@
+InforiaConnect Server Revision Log
+==================================
+
+Timestamp: 2026-06-06T00:54:07+02:00
+Title: Add reloadable InforiaConnect device ID blocklist
+
+Changes:
+  - Created the InforiaConnect-server fork from the stable RustDesk Server
+    1.1.15 source.
+  - Added a file-backed numerical ID blocklist that reloads automatically.
+  - Blocked devices are denied registration, shown as offline, and cannot be
+    targeted through punch-hole or relay setup requests.
+  - Added helper scripts to block, unblock, and list IDs without committing
+    production IDs to Git.
+  - Added a Docker Compose deployment definition preserving host networking,
+    restart policy, server address, key mode, and persistent storage.
+  - Added GitHub Actions compilation, testing, image publication, and smoke
+    testing for the custom hbbs/hbbr image.
+
+Reasons:
+  - Provide reversible administrative blocking of known InforiaConnect IDs.
+  - Keep server changes reproducible and separate from the Windows client.
+
+Validation:
+  - Blocklist unit tests passed in GitHub Actions.
+  - Static hbbs and hbbr compilation passed.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T01:06:07+02:00
+Title: Define the server image binary PATH
+
+Changes:
+  - Added `/usr/bin` to the scratch Docker image PATH.
+
+Reasons:
+  - The first image smoke test could not resolve the hbbs command name.
+
+Validation:
+  - The next workflow proved that Docker's explicit entrypoint did not perform
+    PATH lookup, requiring absolute paths.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T01:16:40+02:00
+Title: Use absolute server binary paths
+
+Changes:
+  - Changed workflow smoke tests and Docker Compose commands to use
+    `/usr/bin/hbbs` and `/usr/bin/hbbr`.
+
+Reasons:
+  - Ensure command resolution works in the minimal scratch image.
+
+Validation:
+  - Docker located the binaries successfully.
+  - The next smoke test exposed missing executable permissions.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T01:53:27+02:00
+Title: Preserve executable permissions in the server image
+
+Changes:
+  - Applied mode 0755 to hbbs and hbbr during Docker COPY.
+
+Reasons:
+  - Artifact transport removed executable mode before the scratch image build.
+
+Validation:
+  - Server source, blocklist tests, static compilation, image build, and image
+    publication passed before the smoke test.
+  - GitHub Actions run for this correction is being monitored.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T02:00:00+02:00
+Title: Separate server operational records from client records
+
+Changed files:
+  - AGENTS.md
+  - logging/BuildErrorServer_log.txt
+  - logging/revisions.txt
+  - logging/revisions_server.txt
+
+Changes:
+  - Created dedicated server revision and build-error logs in the main project.
+  - Migrated concise summaries of all custom server changes and confirmed
+    GitHub Actions failures completed so far.
+  - Reserved `logging/InforiaConnectServer_Tehnicni_pregled.docx` for creation
+    after deployment and end-to-end production validation.
+
+Reasons:
+  - Keep Windows client history and Linux server history independently
+    readable and auditable.
+
+Validation:
+  - Confirmed the migrated entries match the InforiaConnect-server repository
+    history and GitHub Actions results.
+
+-------------------------------------------------------------------------------
