@@ -906,6 +906,8 @@ Changes:
     `%LOCALAPPDATA%\InforiaConnect\Releases\1.4.6-blocklist`.
   - Prepared the artifact for publication as a durable public GitHub Release
     asset suitable for the InforiaConnect website.
+  - Published GitHub Release `v1.4.6-inforia.1` with the final setup
+    executable.
 
 Reasons:
   - Replace the previous installer with the build that understands server-side
@@ -923,6 +925,9 @@ Validation:
   - The user visually confirmed the new "Blocked by administrator" status.
   - The final artifact is 22,461,952 bytes with SHA-256
     E047414787C171A95AB34FAB9BFBE5C9800473E4DC442C4EF5F1EB1790F7C16E.
+  - Verified the public direct-download endpoint returns HTTP 200 and the
+    expected 22,461,952-byte application/octet-stream payload:
+    https://github.com/sistemskaadministracija-cell/InforiaConnect/releases/download/v1.4.6-inforia.1/InforiaConnect-Windows-Setup.exe
   - Authenticode status remains NotSigned; organizational code signing is
     still required to remove unknown-publisher warnings.
 

@@ -143,3 +143,19 @@ Outcome:
   Fixed. GitHub Actions run 27047079246 built the baseline installer, opened
   the branded installation window in its runtime smoke test, and uploaded the
   final artifact successfully.
+
+-------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T16:13:00+02:00
+Error:
+  The first GitHub Release command split multiline notes into separate
+  PowerShell arguments, and the second attempt used an abbreviated commit SHA
+  that GitHub rejected as an invalid release target.
+Fix attempted:
+  Moved the release notes into a dedicated file and supplied the full pushed
+  commit SHA as `target_commitish`.
+Outcome:
+  Fixed. Release `v1.4.6-inforia.1` was published with the validated Windows
+  installer, and its public direct-download endpoint returned HTTP 200.
+
+-------------------------------------------------------------------------------
