@@ -884,3 +884,46 @@ Validation:
   - Intended Actions run name: Administrator ID block status - Windows baseline.
 
 -------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T16:10:02+02:00
+Title: Accept the administrator-blocked client and prepare the website installer
+
+Changed files:
+  - logging/revisions.txt
+  - logging/revisions_server.txt
+  - logging/BuildErrorServer_log.txt
+
+Changes:
+  - Installed the final baseline Windows artifact from GitHub Actions run
+    27048204080 on the local Windows test workstation.
+  - Confirmed the automatic InforiaConnect service runs from
+    `C:\Program Files\InforiaConnect\InforiaConnect.exe`.
+  - Temporarily blocked local device ID 496057868 through the custom server
+    blocklist and confirmed the client displayed "Blocked by administrator".
+  - Removed the temporary block and confirmed the server hot-reloaded an empty
+    blocklist.
+  - Downloaded the exact final artifact to the stable local release folder
+    `%LOCALAPPDATA%\InforiaConnect\Releases\1.4.6-blocklist`.
+  - Prepared the artifact for publication as a durable public GitHub Release
+    asset suitable for the InforiaConnect website.
+
+Reasons:
+  - Replace the previous installer with the build that understands server-side
+    ID blocking and clearly reports that state to the device user.
+  - Validate the feature against the deployed production server before making
+    the installer available for external-LAN acceptance testing.
+
+Validation:
+  - GitHub Actions run 27048204080 completed successfully at commit 987c5932.
+  - Installed executable timestamp is 2026-06-06 16:00:20 local time and
+    product version is 1.4.6+64.
+  - The InforiaConnect Windows service is running with automatic startup.
+  - The deployed hbbs server repeatedly rejected registration and public-key
+    registration for blocked ID 496057868.
+  - The user visually confirmed the new "Blocked by administrator" status.
+  - The final artifact is 22,461,952 bytes with SHA-256
+    E047414787C171A95AB34FAB9BFBE5C9800473E4DC442C4EF5F1EB1790F7C16E.
+  - Authenticode status remains NotSigned; organizational code signing is
+    still required to remove unknown-publisher warnings.
+
+-------------------------------------------------------------------------------

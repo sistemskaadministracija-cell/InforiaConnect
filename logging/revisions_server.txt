@@ -295,3 +295,38 @@ Validation:
     history and GitHub Actions results.
 
 -------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T16:10:02+02:00
+Title: Complete live administrator block and unblock acceptance
+
+Changed files:
+  - /home/inforiaadmin/rustdesk/blocked_ids.txt
+  - logging/revisions_server.txt
+  - logging/BuildErrorServer_log.txt
+
+Changes:
+  - Temporarily added local test device ID 496057868 to the production hbbs
+    blocklist.
+  - Corrected the blocklist write to plain ASCII after PowerShell initially
+    supplied a UTF-8 byte-order mark.
+  - Removed the test ID after the client-side status was visually confirmed.
+  - Left the production blocklist empty after testing.
+
+Reasons:
+  - Validate the deployed blocklist from server file reload through protocol
+    rejection and the installed Windows client's visible status.
+  - Prove that an administrator can revoke and restore a stable device ID
+    without reinstalling the client or restarting hbbs.
+
+Validation:
+  - hbbs logged a reload of exactly one blocked ID.
+  - hbbs rejected both registration and public-key registration for ID
+    496057868 at repeated retry intervals.
+  - The user confirmed the installed client displayed
+    "Blocked by administrator".
+  - hbbs subsequently logged a reload of zero blocked IDs.
+  - `/home/inforiaadmin/rustdesk/blocked_ids.txt` is zero bytes after cleanup.
+  - hbbs and hbbr remained running; no firewall, DNS, routing, port-forwarding,
+    SSH, or other network configuration was changed.
+
+-------------------------------------------------------------------------------

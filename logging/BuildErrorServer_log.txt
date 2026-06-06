@@ -35,3 +35,17 @@ Outcome:
   published the image, and passed hbbs and hbbr smoke tests.
 
 -------------------------------------------------------------------------------
+
+Timestamp: 2026-06-06T16:10:02+02:00
+Error:
+  The first live blocklist write from Windows PowerShell included a UTF-8
+  byte-order mark, so hbbs treated the device ID as invalid and loaded zero
+  blocked IDs.
+Fix attempted:
+  Rewrote the blocklist through the Linux shell with plain ASCII `printf` and
+  retained mode 0600 on the persistent file.
+Outcome:
+  Fixed. hbbs loaded one blocked ID, rejected device 496057868, and later
+  reloaded zero IDs after the acceptance test cleanup.
+
+-------------------------------------------------------------------------------
