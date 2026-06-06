@@ -27,6 +27,40 @@ Validation:
 
 -------------------------------------------------------------------------------
 
+Timestamp: 2026-06-06T03:03:15+02:00
+Title: Complete VM security audit and container isolation hardening
+
+Changes:
+  - Audited OS updates, AppArmor, failed services, login-capable accounts,
+    sudo configuration, Docker security options, listeners, SSH events, and
+    available malware/rootkit tools.
+  - Verified the deployment backup checksum.
+  - Recreated hbbs and hbbr with read-only image filesystems, all capabilities
+    dropped, and no-new-privileges.
+
+Reasons:
+  - Improve production containment using controls appropriate for the minimal
+    scratch-based server image without changing network behavior.
+
+Validation:
+  - Unattended security upgrades and AppArmor are active.
+  - No systemd services are failed and no failed SSH login events were found
+    in the seven-day journal window.
+  - Backup checksum verification passed.
+  - Both hardened containers are running with zero special capabilities and
+    all required listeners active.
+  - The custom image is immutable and contains only the server binaries.
+
+Remaining security decisions requiring explicit approval:
+  - UFW is inactive.
+  - SSH password authentication is enabled.
+  - The Windows installer is not Authenticode-signed.
+  - No antivirus/rootkit scanner is installed. For this minimal container
+    workload, patching, AppArmor, immutable images, least privilege, and
+    backups are currently the higher-value controls.
+
+-------------------------------------------------------------------------------
+
 Timestamp: 2026-06-06T02:21:15+02:00
 Title: Deploy custom hbbs/hbbr and harden persistent data
 
