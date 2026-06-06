@@ -27,6 +27,36 @@ Validation:
 
 -------------------------------------------------------------------------------
 
+Timestamp: 2026-06-06T02:11:50+02:00
+Title: Establish strict VM scope and validation boundaries
+
+Changed files:
+  - AGENTS.md
+  - logging/revisions_server.txt
+
+Changes:
+  - Required post-edit review and practical testing for every implementation.
+  - Limited work to explicitly requested tasks and their minimum supporting
+    changes.
+  - Prohibited unapproved changes to networking, UFW, firewall, DNS, routing,
+    port forwarding, SSH configuration, packages, and unrelated services.
+  - Defined network and firewall security audits as read-only unless a
+    specific change receives separate approval.
+  - Required backup, minimal change, validation, and rollback consideration
+    before approved VM modifications.
+
+Reasons:
+  - Preserve stability and ensure infrastructure access cannot be used beyond
+    the user's requested InforiaConnect work.
+
+Validation:
+  - Verified dedicated SSH key authentication to 192.168.145.111.
+  - Verified the `codex-inforia` account and noninteractive sudo access.
+  - Verification used only `id`, `hostname`, and `sudo -n true`; no VM
+    configuration or network state was changed.
+
+-------------------------------------------------------------------------------
+
 Timestamp: 2026-06-06T01:06:07+02:00
 Title: Define the server image binary PATH
 

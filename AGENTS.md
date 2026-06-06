@@ -60,6 +60,36 @@
 * Do not refactor unrelated code.
 * Do not make formatting-only changes.
 * Keep naming/style consistent with nearby code.
+* Work only on tasks explicitly requested by the user and the minimum
+  supporting work required to complete and validate those tasks.
+* Do not make opportunistic changes, unrelated hardening, cleanup, upgrades,
+  or configuration changes.
+* Stability is a release requirement. Review every implementation after
+  editing and test the affected behavior before considering it complete.
+* Use the strongest practical validation available for the affected layer:
+  focused tests, formatting/static checks, GitHub Actions, artifact inspection,
+  runtime checks, or end-to-end acceptance tests.
+* Never claim that a change works without recording what was actually tested
+  and any remaining limitation.
+
+## Infrastructure Safety Boundary
+
+* Access to the Linux VM is limited to the user's requested InforiaConnect
+  tasks.
+* Never change network configuration on the VM, Windows workstation, router,
+  firewall, DNS, VPN, virtual switch, port forwarding, interfaces, routes, or
+  security groups.
+* Never enable, disable, or modify UFW or other firewall rules without a new,
+  explicit user instruction approving that exact network change.
+* Security reviews of network and firewall state are read-only unless the user
+  separately authorizes a specific remediation.
+* Do not modify SSH server configuration or authentication policy. The
+  dedicated `codex-inforia` key account is only an access mechanism.
+* Do not install packages, upgrade the OS, alter unrelated services, or change
+  system-wide policy unless directly required by an approved task.
+* Before every VM change, identify the exact requested outcome, inspect the
+  current state, back up affected persistent data when appropriate, make the
+  smallest change, and validate both the intended behavior and rollback path.
 
 ## Project Delivery Rules
 
