@@ -140,4 +140,6 @@ Fix attempted:
   Set the runtime application name to InforiaConnect and require the branded
   installer title in the workflow smoke test.
 Outcome:
-  Validation will run in the next GitHub Actions build.
+  Fixed. GitHub Actions run 27047079246 built the baseline installer, opened
+  the branded installation window in its runtime smoke test, and uploaded the
+  final artifact successfully.
