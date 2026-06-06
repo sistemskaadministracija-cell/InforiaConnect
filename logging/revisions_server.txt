@@ -27,6 +27,31 @@ Validation:
 
 -------------------------------------------------------------------------------
 
+Timestamp: 2026-06-06T02:15:00+02:00
+Title: Clarify goal-completion scope for VM security work
+
+Changed files:
+  - AGENTS.md
+  - logging/revisions_server.txt
+
+Changes:
+  - Clarified that scope restrictions do not block supporting work genuinely
+    required to complete an approved task.
+  - Explicitly allowed justified and tested package, service, monitoring,
+    malware-protection, and hardening changes when requested by the user.
+  - Preserved the distinction between required remediation and unrelated or
+    optional improvements.
+
+Reasons:
+  - Ensure strict scope control supports complete, secure delivery instead of
+    preventing necessary implementation work.
+
+Validation:
+  - Reviewed the updated rules for consistency with the existing prohibition
+    on unapproved network and firewall changes.
+
+-------------------------------------------------------------------------------
+
 Timestamp: 2026-06-06T02:11:50+02:00
 Title: Establish strict VM scope and validation boundaries
 

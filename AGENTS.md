@@ -64,6 +64,12 @@
   supporting work required to complete and validate those tasks.
 * Do not make opportunistic changes, unrelated hardening, cleanup, upgrades,
   or configuration changes.
+* These scope rules must not prevent completion of an approved goal. When a
+  requested task genuinely requires supporting tools, packages, services,
+  security controls, configuration, migration, or cleanup, implement that
+  supporting work and validate it as part of the task.
+* Distinguish required remediation from optional improvement. Complete
+  required remediation; do not silently expand into optional work.
 * Stability is a release requirement. Review every implementation after
   editing and test the affected behavior before considering it complete.
 * Use the strongest practical validation available for the affected layer:
@@ -87,6 +93,9 @@
   dedicated `codex-inforia` key account is only an access mechanism.
 * Do not install packages, upgrade the OS, alter unrelated services, or change
   system-wide policy unless directly required by an approved task.
+* Security work explicitly requested by the user may include installing and
+  configuring appropriate tools, services, monitoring, malware protection, or
+  hardening controls when they are technically justified and tested.
 * Before every VM change, identify the exact requested outcome, inspect the
   current state, back up affected persistent data when appropriate, make the
   smallest change, and validate both the intended behavior and rollback path.
